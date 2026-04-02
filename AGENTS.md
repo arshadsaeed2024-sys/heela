@@ -3,15 +3,20 @@
 ## Repository
 
 - Static HTML. Netlify publishes the repo root per `netlify.toml` (`publish = "."`).
-- Git is initialized with an initial commit. **You still need** a remote and push (see below).
+- **GitHub repo:** [github.com/nolimitwaiz/heela](https://github.com/nolimitwaiz/heela) — GitHub Pages URL: [nolimitwaiz.github.io/heela/](https://nolimitwaiz.github.io/heela/).
+- Remote `origin` should point at that repo. If it is missing, run:
+
+   ```bash
+   git remote add origin https://github.com/nolimitwaiz/heela.git
+   git push -u origin main
+   ```
 
 ## Connect Netlify (Git — recommended)
 
-1. Create a new empty repository on GitHub, GitLab, or Bitbucket (do not add a README if you want a clean history, or pull/rebase after).
-2. From this folder:
+1. Ensure this folder is pushed to the repo above (resolve any “remote has commits” case with `git pull origin main --rebase` if needed).
+2. From this folder (if you still need to push):
 
    ```bash
-   git remote add origin <YOUR_REPO_GIT_URL>
    git push -u origin main
    ```
 
@@ -27,7 +32,7 @@ Install the CLI, then authenticate and link this directory once:
 ```bash
 npm install -g netlify-cli
 netlify login
-cd /path/to/Heela_Setup
+cd ~/Desktop/Heela_Setup
 netlify init
 ```
 
