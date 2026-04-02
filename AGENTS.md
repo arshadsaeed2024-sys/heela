@@ -3,7 +3,8 @@
 ## Repository
 
 - Static HTML. Netlify publishes the repo root per `netlify.toml` (`publish = "."`).
-- **GitHub repo:** [github.com/nolimitwaiz/heela](https://github.com/nolimitwaiz/heela) — GitHub Pages URL: [nolimitwaiz.github.io/heela/](https://nolimitwaiz.github.io/heela/).
+- **GitHub repo:** [github.com/nolimitwaiz/heela](https://github.com/nolimitwaiz/heela) (owned by **nolimitwaiz**; you are a **collaborator**). GitHub Pages: [nolimitwaiz.github.io/heela/](https://nolimitwaiz.github.io/heela/).
+- As a collaborator you can usually `git push` to branches the owner allows; use **your** GitHub login when Git prompts for credentials. If the team uses pull requests, push a feature branch and open a PR instead of pushing straight to `main`.
 - Remote `origin` should point at that repo. If it is missing, run:
 
    ```bash

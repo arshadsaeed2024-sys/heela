@@ -5,6 +5,7 @@ alwaysApply: true
 
 # Heela_Setup — deploy and repo conventions
 
+- **GitHub**: Repo is `nolimitwaiz/heela` (owner **nolimitwaiz**; the user is a **collaborator**). Prefer the workflow the team agreed on (direct push vs PR branches). Do not assume the user owns the Netlify/GitHub org settings.
 - **Site type**: Static HTML at the repository root. Primary entry is `index.html`. `netlify.toml` sets `[build] publish = "."`.
 - **Do not** commit secrets, API keys, or `.env` files. Use Netlify **Site settings → Environment variables** for production secrets.
 - **Deploy path**: Prefer Git-connected Netlify (push to the linked branch triggers deploy). For manual deploys from this machine, use Netlify CLI after `netlify login` and `netlify link`.
