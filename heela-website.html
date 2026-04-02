@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heela — Hope in Pashto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --green-900: #1a3a2a;
+  --green-800: #234d38;
+  --green-700: #2d6347;
+  --green-600: #3a7d5a;
+  --green-500: #4a9e72;
+  --green-400: #6db88e;
+  --green-300: #9dd4b3;
+  --green-200: #c8e8d5;
+  --green-100: #e4f3eb;
+  --green-50: #f0f9f4;
+  --warm-900: #2c2520;
+  --warm-800: #3d3530;
+  --warm-700: #5a4f48;
+  --warm-600: #7a6e65;
+  --warm-500: #9a8e85;
+  --warm-400: #b5aaa2;
+  --warm-300: #d1c9c2;
+  --warm-200: #e8e2dc;
+  --warm-100: #f4f1ed;
+  --warm-50: #faf8f6;
+  --sand: #f7f4ef;
+  --cream: #fdfcfa;
+  --text-primary: #1a2e23;
+  --text-secondary: #5a6e62;
+  --text-muted: #8a9a90;
+  --accent-warm: #c4956a;
+  --accent-warm-light: #f5ebe0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  color: var(--text-primary);
+  background: var(--cream);
+  font-weight: 400;
+  line-height: 1.7;
+  font-size: 17px;
+  overflow-x: hidden;
+}
+
+.serif { font-family: 'DM Serif Display', serif; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 1.25rem 2rem;
+  display: flex; justify-content: space-between; align-items: center;
+  transition: all 0.4s ease;
+}
+nav.scrolled {
+  background: rgba(253, 252, 250, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(26, 58, 42, 0.08);
+  padding: 0.85rem 2rem;
+}
+.nav-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  color: var(--green-800);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.nav-links { display: flex; align-items: center; gap: 2rem; }
+.nav-links a {
+  font-size: 0.88rem; font-weight: 500; letter-spacing: 0.04em;
+  text-transform: uppercase; text-decoration: none;
+  color: var(--text-secondary);
+  transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--green-700); }
+.nav-cta {
+  background: var(--green-800) !important; color: #fff !important;
+  padding: 0.6rem 1.5rem; border-radius: 100px;
+  transition: background 0.3s !important;
+}
+.nav-cta:hover { background: var(--green-700) !important; }
+
+/* HERO */
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column;
+  justify-content: center; align-items: center; text-align: center;
+  padding: 8rem 2rem 6rem;
+  position: relative;
+  background: linear-gradient(180deg, var(--green-50) 0%, var(--cream) 100%);
+}
+.hero::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(77, 158, 114, 0.06) 0%, transparent 70%);
+}
+.hero-eyebrow {
+  font-size: 0.82rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--green-600); margin-bottom: 1.5rem; position: relative;
+}
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(3.2rem, 7vw, 5.5rem);
+  line-height: 1.08;
+  color: var(--green-900);
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--green-600);
+}
+.hero-sub {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 2rem;
+  position: relative;
+}
+.hero-mission {
+  max-width: 600px;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 3rem;
+  position: relative;
+}
+.hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; position: relative; }
+.btn-primary {
+  background: var(--green-800); color: #fff;
+  padding: 1rem 2.5rem; border-radius: 100px;
+  text-decoration: none; font-weight: 500; font-size: 0.95rem;
+  letter-spacing: 0.03em;
+  transition: all 0.3s;
+  border: 2px solid var(--green-800);
+}
+.btn-primary:hover { background: var(--green-700); border-color: var(--green-700); transform: translateY(-2px); }
+.btn-secondary {
+  background: transparent; color: var(--green-800);
+  padding: 1rem 2.5rem; border-radius: 100px;
+  text-decoration: none; font-weight: 500; font-size: 0.95rem;
+  letter-spacing: 0.03em;
+  border: 2px solid var(--green-300);
+  transition: all 0.3s;
+}
+.btn-secondary:hover { border-color: var(--green-600); transform: translateY(-2px); }
+
+.scroll-hint {
+  position: absolute; bottom: 2.5rem;
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  color: var(--text-muted); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+  animation: float 2.5s ease-in-out infinite;
+}
+.scroll-line { width: 1px; height: 32px; background: var(--green-300); }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+/* SECTIONS */
+section { padding: 7rem 2rem; }
+.container { max-width: 1080px; margin: 0 auto; }
+.section-label {
+  font-size: 0.78rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--green-600); margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.section-label::before { content: ''; width: 24px; height: 1px; background: var(--green-400); }
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  line-height: 1.2;
+  color: var(--green-900);
+  margin-bottom: 1.5rem;
+}
+.section-text { max-width: 680px; color: var(--text-secondary); line-height: 1.85; }
+
+/* PROBLEM */
+.problem { background: var(--cream); }
+.problem-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+  align-items: center; margin-top: 3rem;
+}
+.problem-stats { display: flex; flex-direction: column; gap: 1.5rem; }
+.stat-card {
+  background: var(--green-50);
+  border-left: 3px solid var(--green-400);
+  padding: 1.25rem 1.5rem;
+  border-radius: 0 12px 12px 0;
+}
+.stat-card p {
+  font-size: 0.92rem; color: var(--text-secondary); line-height: 1.65;
+}
+.stat-card p strong { color: var(--green-800); font-weight: 600; }
+.problem-note {
+  margin-top: 2rem; padding: 1.5rem;
+  background: var(--accent-warm-light);
+  border-radius: 12px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--warm-700);
+  line-height: 1.6;
+}
+
+/* HOW WE WORK */
+.how { background: var(--green-900); color: #fff; position: relative; overflow: hidden; }
+.how::before {
+  content: ''; position: absolute; top: -40%; right: -20%; width: 600px; height: 600px;
+  border-radius: 50%; background: rgba(77, 158, 114, 0.08);
+}
+.how .section-label { color: var(--green-300); }
+.how .section-label::before { background: var(--green-400); }
+.how .section-title { color: #fff; }
+.how .section-text { color: rgba(255,255,255,0.7); }
+.how-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+  margin-top: 3rem; position: relative;
+}
+.how-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: all 0.3s;
+}
+.how-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-3px); }
+.how-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: rgba(77, 158, 114, 0.2);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1.25rem; font-size: 1.3rem;
+}
+.how-card h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.65rem; color: #fff; }
+.how-card p { font-size: 0.92rem; color: rgba(255,255,255,0.65); line-height: 1.7; }
+.how-arc {
+  grid-column: 1 / -1; margin-top: 1rem;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+}
+.arc-step {
+  text-align: center; padding: 1.25rem 0.75rem;
+  border-top: 2px solid var(--green-600);
+  position: relative;
+}
+.arc-step::before {
+  content: ''; position: absolute; top: -6px; left: 50%;
+  transform: translateX(-50%);
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--green-400);
+}
+.arc-step span { display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--green-300); margin-bottom: 0.35rem; }
+.arc-step strong { font-size: 0.92rem; font-weight: 500; color: #fff; }
+
+/* DIFFERENT */
+.different { background: var(--cream); }
+.diff-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+.diff-card {
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid var(--green-200);
+  background: #fff;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.diff-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; background: var(--green-400);
+  transform: scaleX(0); transition: transform 0.4s; transform-origin: left;
+}
+.diff-card:hover::before { transform: scaleX(1); }
+.diff-card:hover { border-color: var(--green-300); transform: translateY(-3px); }
+.diff-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem; color: var(--green-200);
+  margin-bottom: 0.75rem;
+}
+.diff-card h3 { font-size: 1.05rem; font-weight: 600; color: var(--green-900); margin-bottom: 0.65rem; }
+.diff-card p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; }
+
+/* GLANCE */
+.glance { background: var(--sand); }
+.stats-row {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem;
+  margin-top: 3rem;
+}
+.stats-card {
+  background: #fff; border-radius: 16px; padding: 2rem 1.5rem;
+  text-align: center;
+  border: 1px solid var(--green-100);
+  transition: all 0.3s;
+}
+.stats-card:hover { transform: translateY(-3px); border-color: var(--green-300); }
+.stats-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.8rem; color: var(--green-700);
+  line-height: 1; margin-bottom: 0.5rem;
+}
+.stats-label { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; }
+.budget-note {
+  margin-top: 2.5rem; text-align: center;
+  font-size: 1rem; color: var(--text-secondary);
+}
+.budget-highlight {
+  display: inline-block; background: var(--green-100); color: var(--green-800);
+  padding: 0.4rem 1rem; border-radius: 100px; font-weight: 600;
+  font-size: 0.9rem; margin-left: 0.35rem;
+}
+
+/* SUPPORT */
+.support { background: var(--cream); }
+.support-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 3rem; }
+.support-card {
+  padding: 2.25rem; border-radius: 16px;
+  background: #fff; border: 1px solid var(--green-100);
+  transition: all 0.3s;
+}
+.support-card:hover { border-color: var(--green-300); transform: translateY(-2px); }
+.support-card h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.35rem; color: var(--green-900); margin-bottom: 0.65rem;
+}
+.support-card p { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.7; }
+.support-card.featured {
+  background: var(--green-800); border-color: var(--green-800);
+  grid-column: 1 / -1;
+  display: flex; align-items: center; justify-content: space-between; gap: 3rem;
+}
+.support-card.featured h3 { color: #fff; font-size: 1.5rem; }
+.support-card.featured p { color: rgba(255,255,255,0.7); }
+.support-card.featured:hover { background: var(--green-700); border-color: var(--green-700); }
+.btn-donate {
+  background: #fff; color: var(--green-800);
+  padding: 1rem 2.5rem; border-radius: 100px;
+  text-decoration: none; font-weight: 600; font-size: 0.95rem;
+  white-space: nowrap;
+  transition: all 0.3s;
+  border: none; cursor: pointer;
+}
+.btn-donate:hover { transform: scale(1.05); }
+
+/* FOOTER */
+footer {
+  background: var(--green-900); color: rgba(255,255,255,0.6);
+  padding: 4rem 2rem 3rem; text-align: center;
+}
+.footer-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.8rem; color: #fff; margin-bottom: 0.35rem;
+}
+.footer-meaning {
+  font-style: italic; font-size: 0.9rem; color: var(--green-300);
+  margin-bottom: 2rem;
+}
+.footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; }
+.footer-links a {
+  color: rgba(255,255,255,0.6); text-decoration: none;
+  font-size: 0.85rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase;
+  transition: color 0.3s;
+}
+.footer-links a:hover { color: #fff; }
+.footer-divider { width: 60px; height: 1px; background: rgba(255,255,255,0.15); margin: 2rem auto; }
+.footer-info { font-size: 0.82rem; line-height: 1.8; }
+.footer-info a { color: var(--green-300); text-decoration: none; }
+
+/* ANIMATIONS */
+.reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .problem-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .how-grid { grid-template-columns: 1fr; }
+  .how-arc { grid-template-columns: repeat(2, 1fr); }
+  .diff-grid { grid-template-columns: 1fr; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .support-grid { grid-template-columns: 1fr; }
+  .support-card.featured { flex-direction: column; text-align: center; gap: 1.5rem; }
+}
+@media (max-width: 600px) {
+  nav { padding: 1rem; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  section { padding: 5rem 1.25rem; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .how-arc { grid-template-columns: 1fr 1fr; }
+  .hero { padding: 7rem 1.25rem 5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">Heela</a>
+  <div class="nav-links">
+    <a href="#problem">Why</a>
+    <a href="#how">How</a>
+    <a href="#different">Difference</a>
+    <a href="#support" class="nav-cta">Support</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">College access for refugee students</div>
+  <h1 class="serif">Heela</h1>
+  <p class="hero-sub">hope, in Pashto</p>
+  <p class="hero-mission">Heela builds structured, ethical pathways to higher education for refugee students — because displacement should never determine a young person's future.</p>
+  <div class="hero-buttons">
+    <a href="#support" class="btn-primary">Donate</a>
+    <a href="#support" class="btn-secondary">Refer a student</a>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <div class="container">
+    <div class="problem-grid">
+      <div>
+        <div class="section-label reveal">The problem</div>
+        <h2 class="section-title reveal">The gap isn't ability.<br>It's navigation.</h2>
+        <p class="section-text reveal">Refugee students in the United States face compounding barriers to college access. They navigate unfamiliar educational systems with limited institutional knowledge, often without parents who can guide them through applications, financial aid, or standardized testing.</p>
+        <p class="section-text reveal" style="margin-top: 1rem;">School counselors are stretched thin and rarely equipped to address the specific needs of displaced youth. The result is not a lack of ambition. It's a lack of structured, sustained support at the exact moment it matters most.</p>
+      </div>
+      <div class="problem-stats">
+        <div class="stat-card reveal">
+          <p><strong>Families unfamiliar</strong> with U.S. higher education systems have no roadmap to follow.</p>
+        </div>
+        <div class="stat-card reveal reveal-delay-1">
+          <p><strong>Overburdened school counselors</strong> lack the capacity for refugee-specific guidance.</p>
+        </div>
+        <div class="stat-card reveal reveal-delay-2">
+          <p><strong>Fragmented support programs</strong> offer short-term help, not sustained follow-through.</p>
+        </div>
+        <div class="stat-card reveal reveal-delay-3">
+          <p><strong>Transportation, language, and cultural barriers</strong> block access to what help does exist.</p>
+        </div>
+        <div class="problem-note reveal">
+          "This is a navigation problem, not a capability problem."
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW WE WORK -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="section-label reveal">How we work</div>
+    <h2 class="section-title reveal">Two people. One student.<br>Forty weeks.</h2>
+    <p class="section-text reveal">Every student is paired with a trained, paid Student Fellow — a university student who provides weekly one-on-one guidance through the entire college preparation process, from building a list to enrollment day.</p>
+
+    <div class="how-grid">
+      <div class="how-card reveal">
+        <div class="how-icon">
+          <svg width="24" height="24" fill="none" stroke="#6db88e" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 014-4h6a4 4 0 014 4v2"/><path d="M19 8v6m3-3h-6"/></svg>
+        </div>
+        <h3>Student Fellow</h3>
+        <p>A paid, near-peer mentor from a U.S. university. W-2 employee, not a volunteer. Capped at five students to protect the depth that makes this work. Weekly Zoom sessions, 45 to 60 minutes.</p>
+      </div>
+      <div class="how-card reveal reveal-delay-1">
+        <div class="how-icon">
+          <svg width="24" height="24" fill="none" stroke="#6db88e" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>Executive Director</h3>
+        <p>Supervises every Fellow. Monitors every student's progress. Holds safeguarding responsibility. When something goes off track, the ED intervenes — not after the deadline passes, but before.</p>
+      </div>
+
+      <div class="how-arc reveal">
+        <div class="arc-step">
+          <span>Weeks 1–6</span>
+          <strong>Foundation</strong>
+        </div>
+        <div class="arc-step">
+          <span>Weeks 7–18</span>
+          <strong>Build</strong>
+        </div>
+        <div class="arc-step">
+          <span>Weeks 19–30</span>
+          <strong>Sustain</strong>
+        </div>
+        <div class="arc-step">
+          <span>Weeks 31–40</span>
+          <strong>Land</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT MAKES US DIFFERENT -->
+<section class="different" id="different">
+  <div class="container">
+    <div class="section-label reveal">What makes Heela different</div>
+    <h2 class="section-title reveal">Not another mentoring program.</h2>
+
+    <div class="diff-grid">
+      <div class="diff-card reveal">
+        <div class="diff-num">01</div>
+        <h3>Structure is care</h3>
+        <p>Every session follows a clear format. Every student has an individualized college prep plan with milestones and deadlines. Progress is tracked weekly — not loosely hoped for.</p>
+      </div>
+      <div class="diff-card reveal reveal-delay-1">
+        <div class="diff-num">02</div>
+        <h3>Accountability both ways</h3>
+        <p>We ask students to show up and do the work. In return, we commit to being prepared, responsive, and honest. The system catches problems early, not after it's too late.</p>
+      </div>
+      <div class="diff-card reveal reveal-delay-2">
+        <div class="diff-num">03</div>
+        <h3>Near-peer relationships</h3>
+        <p>Fellows are close enough in age and experience to be credible guides — not distant authority figures. The relationship is the method, and it only works when it's real.</p>
+      </div>
+      <div class="diff-card reveal">
+        <div class="diff-num">04</div>
+        <h3>Ethical by design</h3>
+        <p>We serve minors across cultures and power imbalances. Safeguarding, boundaries, and cultural humility are built into every process — not added as afterthoughts.</p>
+      </div>
+      <div class="diff-card reveal reveal-delay-1">
+        <div class="diff-num">05</div>
+        <h3>Through enrollment</h3>
+        <p>Heela doesn't end when the application is submitted. We walk with students through financial aid, decision-making, enrollment, and the transition to campus.</p>
+      </div>
+      <div class="diff-card reveal reveal-delay-2">
+        <div class="diff-num">06</div>
+        <h3>Context, not identity</h3>
+        <p>Our students are refugees. That matters for understanding their barriers. It does not define their potential. This is not a pity program — it's a navigation program.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- YEAR 1 AT A GLANCE -->
+<section class="glance" id="glance">
+  <div class="container">
+    <div class="section-label reveal">Year 1 at a glance</div>
+    <h2 class="section-title reveal">Lean by design. Every dollar to the work.</h2>
+
+    <div class="stats-row">
+      <div class="stats-card reveal">
+        <div class="stats-num">10</div>
+        <div class="stats-label">Students served nationwide</div>
+      </div>
+      <div class="stats-card reveal reveal-delay-1">
+        <div class="stats-num">40</div>
+        <div class="stats-label">Weeks of support</div>
+      </div>
+      <div class="stats-card reveal reveal-delay-2">
+        <div class="stats-num">5:1</div>
+        <div class="stats-label">Max student-to-Fellow ratio</div>
+      </div>
+      <div class="stats-card reveal reveal-delay-3">
+        <div class="stats-num">80%+</div>
+        <div class="stats-label">Budget to direct service</div>
+      </div>
+    </div>
+
+    <p class="budget-note reveal">Full year of structured college preparation per student: <span class="budget-highlight">Under $10,000</span></p>
+  </div>
+</section>
+
+<!-- SUPPORT -->
+<section class="support" id="support">
+  <div class="container">
+    <div class="section-label reveal">How to support Heela</div>
+    <h2 class="section-title reveal">Help build the road.</h2>
+    <p class="section-text reveal">Heela is raising funds to launch its first cohort. There are several ways to be part of this.</p>
+
+    <div class="support-grid">
+      <div class="support-card featured reveal">
+        <div>
+          <h3>Give</h3>
+          <p>Financial contributions of any size go directly to supporting students and paying the people who serve them. Over 80% of the budget funds direct program delivery.</p>
+        </div>
+        <a href="#" class="btn-donate">Donate now</a>
+      </div>
+
+      <div class="support-card reveal">
+        <h3>Refer</h3>
+        <p>Know a refugee high school student anywhere in the U.S. who could benefit? Or a university student who would make a strong Fellow? We want to hear from you.</p>
+      </div>
+      <div class="support-card reveal reveal-delay-1">
+        <h3>Connect</h3>
+        <p>Introductions to potential funders, community partners, school counselors, or resettlement agencies help Heela reach the students who need it most.</p>
+      </div>
+      <div class="support-card reveal reveal-delay-2" style="grid-column: 1 / -1;">
+        <h3>Spread the word</h3>
+        <p>Share Heela's story with your network. The more people know about what we're building, the more students we can ultimately serve.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Heela</div>
+  <div class="footer-meaning">hope, in Pashto</div>
+  <div class="footer-links">
+    <a href="#problem">Why</a>
+    <a href="#how">How</a>
+    <a href="#different">Difference</a>
+    <a href="#support">Support</a>
+  </div>
+  <div class="footer-divider"></div>
+  <div class="footer-info">
+    Salt Lake City, Utah<br>
+    <a href="mailto:hello@heela.org">hello@heela.org</a><br><br>
+    Heela is a 501(c)(3) tax-exempt organization (pending).<br>
+    All donations are tax-deductible to the extent allowed by law.
+  </div>
+</footer>
+
+<script>
+// Nav scroll effect
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+
+</body>
+</html>
