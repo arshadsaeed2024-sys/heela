@@ -1206,26 +1206,26 @@ footer {
       <div class="section-label">For students</div>
       <h2 class="section-title">You belong in college.<br>Let's get you there.</h2>
       <p class="waitlist-sub">Heela is opening its first cohort soon. Join the interest list and we'll reach out when applications open.</p>
-      <!-- TO CONNECT: Replace this form's action with your Google Form, Typeform, or Tally URL -->
-      <div class="waitlist-form" id="waitlist-form">
+      <form class="waitlist-form" id="waitlist-form" name="waitlist" data-netlify="true">
+        <input type="hidden" name="form-name" value="waitlist">
         <div class="waitlist-row">
-          <input type="text" placeholder="First name" required>
-          <input type="text" placeholder="Last name" required>
+          <input type="text" name="first-name" placeholder="First name" required>
+          <input type="text" name="last-name" placeholder="Last name" required>
         </div>
-        <input type="email" placeholder="Email address" required>
-        <input type="tel" placeholder="Phone number (optional)">
+        <input type="email" name="email" placeholder="Email address" required>
+        <input type="tel" name="phone" placeholder="Phone number (optional)">
         <div class="waitlist-row">
-          <select required>
+          <select name="grade" required>
             <option value="" disabled selected style="color: #8a8a8a;">Current grade</option>
             <option value="10">10th grade</option>
             <option value="11">11th grade (junior)</option>
             <option value="12">12th grade (senior)</option>
           </select>
-          <input type="text" placeholder="City, State">
+          <input type="text" name="city-state" placeholder="City, State">
         </div>
         <button class="waitlist-submit" type="button" onclick="handleWaitlist()">Join the interest list &rarr;</button>
         <div class="waitlist-note">We'll never share your information. Joining the list does not guarantee a spot.</div>
-      </div>
+      </form>
     </div>
   </div>
 </section>
@@ -1282,8 +1282,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 });
 
 // Waitlist form handler
-// TODO: Connect to Google Forms, Typeform, Tally, or your own backend
-function handleWaitlist() {
+async function handleWaitlist() {
   const form = document.getElementById('waitlist-form');
   const inputs = form.querySelectorAll('input[required], select[required]');
   let valid = true;
@@ -1295,9 +1294,27 @@ function handleWaitlist() {
     }
   });
   if (!valid) return;
+
+  const email = form.querySelector('input[name="email"]').value;
+  const firstName = form.querySelector('input[name="first-name"]').value;
+
+  const formData = new FormData(form);
+  await fetch('/', { method: 'POST', body: formData });
+
+  sendThankYouEmail(email, firstName);
+
   form.innerHTML = '<div style="text-align: center; padding: 2rem 0;"><p style="font-family: DM Serif Display, serif; font-size: 1.5rem; color: #1B3D2F; margin-bottom: 0.5rem;">You\'re on the list.</p><p style="font-size: 0.95rem; color: #5a5a5a;">We\'ll be in touch when applications open. Thank you for your interest in Heela.</p></div>';
+}
+
+function sendThankYouEmail(email, firstName) {
+  if (typeof emailjs === 'undefined') return;
+  emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', {
+    to_email: email,
+    first_name: firstName,
+  });
 }
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </body>
 </html>
