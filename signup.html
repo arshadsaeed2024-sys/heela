@@ -345,7 +345,7 @@ async function handleSignup() {
 
   try {
     // Create Supabase Auth user
-    const authRes = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+    const authRes = await fetch(`${SUPABASE_URL}/auth/v1/signup?redirect_to=https://heela.org/login.html`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
