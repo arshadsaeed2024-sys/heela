@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Heela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --green-900: #1B3D2F; --green-800: #234E3B; --green-700: #2B5A45;
+  --green-600: #366B53; --green-500: #3E7A5E; --green-400: #5A9A7A;
+  --green-300: #7BAF96; --green-200: #A8CDB8; --green-100: #D4E8DC; --green-50: #EBF3EE;
+  --warm-800: #4a3f36; --warm-200: #ece6dd; --warm-100: #F3EFE8; --warm-50: #F7F4EF;
+  --white: #FFFCF7; --text-primary: #1a1a1a; --text-secondary: #5a5a5a; --text-muted: #8a8a8a;
+  --sidebar-w: 240px;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Outfit', sans-serif; background: var(--warm-50); color: var(--text-primary); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+/* LAYOUT */
+.app { display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--green-900);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 50;
+  padding: 1.5rem 1rem;
+}
+.sidebar-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  color: var(--green-100);
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 2rem;
+  display: block;
+}
+.sidebar-logo span { font-size: 0.75rem; font-family: 'Outfit', sans-serif; display: block; color: var(--green-400); letter-spacing: 0.05em; font-weight: 400; margin-top: 0.1rem; }
+.nav-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.75rem; border-radius: 10px;
+  text-decoration: none; color: rgba(255,255,255,0.6);
+  font-size: 0.9rem; font-weight: 400;
+  transition: all 0.2s; margin-bottom: 0.25rem;
+}
+.nav-item:hover { background: rgba(255,255,255,0.08); color: var(--white); }
+.nav-item.active { background: rgba(255,255,255,0.12); color: var(--white); }
+.nav-item svg { flex-shrink: 0; opacity: 0.7; }
+.nav-item.active svg, .nav-item:hover svg { opacity: 1; }
+.sidebar-bottom { margin-top: auto; }
+.sign-out { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 10px; color: rgba(255,255,255,0.4); font-size: 0.85rem; cursor: pointer; transition: all 0.2s; background: none; border: none; font-family: 'Outfit', sans-serif; width: 100%; }
+.sign-out:hover { color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.06); }
+
+/* MAIN */
+.main { margin-left: var(--sidebar-w); flex: 1; padding: 2.5rem; max-width: 900px; }
+
+/* HEADER */
+.page-header { margin-bottom: 2rem; }
+.greeting { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--green-900); margin-bottom: 0.25rem; }
+.greeting-sub { font-size: 0.95rem; color: var(--text-muted); }
+
+/* CARDS GRID */
+.cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+.card {
+  background: var(--white); border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 1.75rem;
+}
+.card-label { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem; }
+.card-title { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--green-900); margin-bottom: 0.25rem; }
+.card-sub { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5; }
+
+/* PHASE CARD */
+.phase-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--green-100); color: var(--green-800);
+  padding: 0.4rem 1rem; border-radius: 100px;
+  font-size: 0.8rem; font-weight: 500; margin-bottom: 1rem;
+}
+.phase-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green-600); }
+.progress-bar-wrap { background: var(--warm-50); border-radius: 100px; height: 8px; margin: 1rem 0 0.5rem; overflow: hidden; }
+.progress-bar-fill { height: 100%; border-radius: 100px; background: var(--green-500); transition: width 0.6s ease; }
+.progress-label { font-size: 0.8rem; color: var(--text-muted); }
+
+/* FELLOW CARD */
+.fellow-avatar {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--green-200); display: flex; align-items: center;
+  justify-content: center; font-family: 'DM Serif Display', serif;
+  font-size: 1.1rem; color: var(--green-800); margin-bottom: 1rem;
+  overflow: hidden;
+}
+.fellow-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.fellow-unassigned { color: var(--text-muted); font-size: 0.875rem; font-style: italic; }
+.pill {
+  display: inline-block; padding: 0.3rem 0.8rem; border-radius: 100px;
+  font-size: 0.75rem; font-weight: 500; background: var(--green-50); color: var(--green-700);
+  margin-top: 0.5rem;
+}
+
+/* MESSAGES PREVIEW */
+.messages-card { grid-column: 1 / -1; }
+.messages-preview { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.msg-row { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; border-radius: 10px; background: var(--warm-50); }
+.msg-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--green-200); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; color: var(--green-800); flex-shrink: 0; }
+.msg-body { flex: 1; min-width: 0; }
+.msg-meta { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.2rem; }
+.msg-sender { font-size: 0.8rem; font-weight: 600; color: var(--text-primary); }
+.msg-time { font-size: 0.75rem; color: var(--text-muted); }
+.msg-text { font-size: 0.85rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.empty-state { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.875rem; }
+.btn-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--green-700); font-size: 0.875rem; font-weight: 500; text-decoration: none; margin-top: 1rem; transition: color 0.2s; }
+.btn-link:hover { color: var(--green-900); }
+
+/* STATS ROW */
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 1.5rem; }
+.stat-card { background: var(--white); border-radius: 16px; border: 1px solid rgba(0,0,0,0.06); padding: 1.5rem; text-align: center; }
+.stat-num { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--green-800); line-height: 1; margin-bottom: 0.25rem; }
+.stat-lbl { font-size: 0.8rem; color: var(--text-muted); }
+
+/* LOADING */
+.loading { display: flex; align-items: center; justify-content: center; min-height: 60vh; }
+.spinner { width: 32px; height: 32px; border: 3px solid var(--green-100); border-top-color: var(--green-600); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 1.25rem; padding-bottom: 5rem; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .mobile-nav { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: var(--green-900); z-index: 50; padding: 0.75rem 0 calc(0.75rem + env(safe-area-inset-bottom)); border-top: 1px solid rgba(255,255,255,0.08); }
+  .mobile-nav a { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.65rem; }
+  .mobile-nav a.active, .mobile-nav a:hover { color: var(--white); }
+  .mobile-nav svg { width: 20px; height: 20px; }
+  .greeting { font-size: 1.5rem; }
+}
+@media (min-width: 769px) { .mobile-nav { display: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <a href="/" class="sidebar-logo">Heela <span>Student Portal</span></a>
+    <a href="/dashboard.html" class="nav-item active">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/></svg>
+      Dashboard
+    </a>
+    <a href="/messages.html" class="nav-item">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 012 2v10a2 2 0 01-2 2H7l-4 3V6a2 2 0 012-2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      Messages
+    </a>
+    <a href="/profile.html" class="nav-item">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Profile
+    </a>
+    <div class="sidebar-bottom">
+      <button class="sign-out" onclick="signOut()">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Sign out
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" id="main-content">
+    <div class="loading" id="loading"><div class="spinner"></div></div>
+    <div id="content" style="display:none;">
+      <div class="page-header">
+        <h1 class="greeting" id="greeting">Welcome back</h1>
+        <p class="greeting-sub" id="greeting-sub">Here's where you stand today.</p>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num" id="stat-week">—</div>
+          <div class="stat-lbl">Current week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="stat-phase">—</div>
+          <div class="stat-lbl">Current phase</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="stat-weeks-left">—</div>
+          <div class="stat-lbl">Weeks remaining</div>
+        </div>
+      </div>
+
+      <!-- CARDS -->
+      <div class="cards-grid">
+        <!-- PHASE -->
+        <div class="card">
+          <div class="card-label">Your journey</div>
+          <div class="phase-badge"><span class="phase-dot"></span><span id="phase-name">Foundation</span></div>
+          <p class="card-sub" id="phase-desc">Getting to know you, building your college list, and setting your personalized plan.</p>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+          <p class="progress-label" id="progress-label">Week 1 of 40</p>
+        </div>
+
+        <!-- FELLOW -->
+        <div class="card">
+          <div class="card-label">Your Fellow</div>
+          <div id="fellow-content">
+            <p class="fellow-unassigned">Your Fellow hasn't been assigned yet. We'll notify you as soon as someone is matched with you.</p>
+          </div>
+        </div>
+
+        <!-- MESSAGES PREVIEW -->
+        <div class="card messages-card">
+          <div class="card-label">Recent messages</div>
+          <div id="messages-preview"><div class="empty-state">No messages yet. Once your Fellow is assigned, your conversation will appear here.</div></div>
+          <a href="/messages.html" class="btn-link">Go to messages &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav">
+  <a href="/dashboard.html" class="active">
+    <svg fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/></svg>
+    Home
+  </a>
+  <a href="/messages.html">
+    <svg fill="none" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 012 2v10a2 2 0 01-2 2H7l-4 3V6a2 2 0 012-2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    Messages
+  </a>
+  <a href="/profile.html">
+    <svg fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    Profile
+  </a>
+</nav>
+
+<script>
+const SUPABASE_URL = 'https://ffoarsbuqrlbpkvaxvha.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_l7lnXsEMcrB0whXR6GCbIw_M4bwwCpe';
+
+const PHASES = [
+  { name: 'Foundation', weeks: '1–6',  desc: 'Getting to know you, building your college list, and setting your personalized plan.' },
+  { name: 'Build',      weeks: '7–18', desc: 'Applications, essays, recommendation letters, FAFSA, and financial aid — every step.' },
+  { name: 'Sustain',    weeks: '19–30',desc: 'Scholarships, financial aid follow-ups, and decision preparation. Keeping momentum.' },
+  { name: 'Land',       weeks: '31–40',desc: 'Compare offers, commit, complete enrollment, and prepare for your first day.' },
+];
+
+function getSession() {
+  const s = localStorage.getItem('heela_session');
+  return s ? JSON.parse(s) : null;
+}
+
+function signOut() {
+  localStorage.removeItem('heela_session');
+  window.location.href = '/login.html';
+}
+
+function authHeaders(token) {
+  return { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+}
+
+function getPhaseIndex(week) {
+  if (week <= 6)  return 0;
+  if (week <= 18) return 1;
+  if (week <= 30) return 2;
+  return 3;
+}
+
+function timeAgo(ts) {
+  const diff = (Date.now() - new Date(ts)) / 1000;
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+  return `${Math.floor(diff/86400)}d ago`;
+}
+
+async function loadDashboard() {
+  const session = getSession();
+  if (!session) { window.location.href = '/login.html'; return; }
+
+  const token = session.access_token;
+  const userId = session.user.id;
+
+  // Get student profile
+  const sRes = await fetch(`${SUPABASE_URL}/rest/v1/students?auth_id=eq.${userId}&limit=1`, {
+    headers: authHeaders(token)
+  });
+  const students = await sRes.json();
+  const student = students[0];
+
+  if (!student) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+    document.getElementById('greeting').textContent = 'Welcome to Heela';
+    document.getElementById('greeting-sub').textContent = 'Your profile is being set up. Check back soon.';
+    return;
+  }
+
+  const week  = student.current_week || 1;
+  const phaseIdx = getPhaseIndex(week);
+  const phase = PHASES[phaseIdx];
+
+  // Header
+  document.getElementById('greeting').textContent = `Welcome back, ${student.first_name}.`;
+  document.getElementById('greeting-sub').textContent = `You're in week ${week} of your Heela journey.`;
+
+  // Stats
+  document.getElementById('stat-week').textContent  = week;
+  document.getElementById('stat-phase').textContent = phaseIdx + 1;
+  document.getElementById('stat-weeks-left').textContent = 40 - week;
+
+  // Phase card
+  document.getElementById('phase-name').textContent  = phase.name;
+  document.getElementById('phase-desc').textContent  = phase.desc;
+  document.getElementById('progress-fill').style.width = `${Math.round((week / 40) * 100)}%`;
+  document.getElementById('progress-label').textContent = `Week ${week} of 40 · Phase ${phaseIdx+1}: ${phase.name} (Weeks ${phase.weeks})`;
+
+  // Fellow
+  const aRes = await fetch(`${SUPABASE_URL}/rest/v1/assignments?student_id=eq.${student.id}&status=eq.active&limit=1`, {
+    headers: authHeaders(token)
+  });
+  const assignments = await aRes.json();
+  const assignment  = assignments[0];
+
+  if (assignment) {
+    const fRes = await fetch(`${SUPABASE_URL}/rest/v1/fellows?id=eq.${assignment.fellow_id}&limit=1`, {
+      headers: authHeaders(token)
+    });
+    const fellows = await fRes.json();
+    const fellow  = fellows[0];
+    if (fellow) {
+      const initials = fellow.first_name[0] + fellow.last_name[0];
+      document.getElementById('fellow-content').innerHTML = `
+        <div class="fellow-avatar">${initials}</div>
+        <div class="card-title">${fellow.first_name} ${fellow.last_name}</div>
+        <div class="card-sub">${fellow.university || 'Student Fellow'}</div>
+        ${fellow.bio ? `<p class="card-sub" style="margin-top:0.5rem;">${fellow.bio}</p>` : ''}
+        <a href="/messages.html" class="pill">Send a message →</a>
+      `;
+
+      // Recent messages
+      const mRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?assignment_id=eq.${assignment.id}&order=created_at.desc&limit=3`, {
+        headers: authHeaders(token)
+      });
+      const msgs = await mRes.json();
+      if (msgs.length > 0) {
+        const html = msgs.reverse().map(m => {
+          const isMe = m.sender_role === 'student';
+          const name = isMe ? student.first_name : fellow.first_name;
+          const init = name[0].toUpperCase();
+          return `<div class="msg-row">
+            <div class="msg-avatar">${init}</div>
+            <div class="msg-body">
+              <div class="msg-meta"><span class="msg-sender">${name}</span><span class="msg-time">${timeAgo(m.created_at)}</span></div>
+              <div class="msg-text">${m.content}</div>
+            </div>
+          </div>`;
+        }).join('');
+        document.getElementById('messages-preview').innerHTML = html;
+      }
+    }
+  }
+
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+}
+
+loadDashboard();
+</script>
+</body>
+</html>

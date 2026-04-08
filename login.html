@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — Heela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --green-900: #1B3D2F; --green-800: #234E3B; --green-700: #2B5A45;
+  --green-600: #366B53; --green-500: #3E7A5E; --green-300: #7BAF96;
+  --green-100: #D4E8DC; --green-50: #EBF3EE;
+  --warm-50: #F7F4EF; --white: #FFFCF7;
+  --text-primary: #1a1a1a; --text-secondary: #5a5a5a; --text-muted: #8a8a8a;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Outfit', sans-serif; background: var(--warm-50); color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; -webkit-font-smoothing: antialiased; }
+nav { padding: 1.2rem 2rem; display: flex; align-items: center; justify-content: space-between; background: rgba(247,244,239,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.06); }
+.nav-logo { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--green-800); text-decoration: none; }
+.nav-link { font-size: 0.9rem; color: var(--text-secondary); text-decoration: none; }
+.nav-link:hover { color: var(--green-700); }
+main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 3rem 1.5rem; }
+.card { background: var(--white); border-radius: 20px; border: 1px solid rgba(0,0,0,0.06); padding: 3rem 2.5rem; width: 100%; max-width: 440px; box-shadow: 0 4px 40px rgba(0,0,0,0.06); }
+.tag { display: inline-block; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--green-700); margin-bottom: 1rem; padding: 0.35rem 0.9rem; background: var(--green-100); border-radius: 100px; }
+h1 { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--green-900); margin-bottom: 0.4rem; letter-spacing: -0.02em; }
+.sub { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 2rem; }
+.sub a { color: var(--green-700); text-decoration: none; font-weight: 500; }
+.sub a:hover { text-decoration: underline; }
+.form-group { margin-bottom: 0.75rem; }
+label { display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 0.4rem; }
+input { width: 100%; padding: 0.85rem 1rem; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); background: var(--warm-50); color: var(--text-primary); font-family: 'Outfit', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s, background 0.2s; }
+input::placeholder { color: var(--text-muted); }
+input:focus { border-color: var(--green-500); background: var(--white); }
+.error-msg { display: none; font-size: 0.875rem; color: #c0392b; background: #fef0ec; border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 0.75rem; }
+.btn { width: 100%; padding: 1rem; background: var(--green-800); color: var(--white); border: none; border-radius: 100px; font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.15s; margin-top: 0.5rem; }
+.btn:hover { background: var(--green-700); transform: translateY(-2px); }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.forgot { display: block; text-align: center; margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted); }
+.forgot a { color: var(--green-600); text-decoration: none; }
+.forgot a:hover { text-decoration: underline; }
+@media (max-width: 480px) { .card { padding: 2rem 1.5rem; } h1 { font-size: 1.7rem; } }
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="nav-logo">Heela</a>
+  <a href="/signup.html" class="nav-link">Create account</a>
+</nav>
+<main>
+  <div class="card">
+    <div class="tag">Welcome back</div>
+    <h1>Sign in</h1>
+    <p class="sub">No account yet? <a href="/signup.html">Sign up</a></p>
+    <div class="error-msg" id="error-msg"></div>
+    <div class="form-group">
+      <label for="email">Email address</label>
+      <input type="email" id="email" placeholder="you@email.com" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Your password" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter') handleLogin()">
+    </div>
+    <button class="btn" id="login-btn" onclick="handleLogin()">Sign in &rarr;</button>
+    <p class="forgot"><a href="mailto:hello@heela.org">Forgot your password? Email us</a></p>
+  </div>
+</main>
+<script>
+const SUPABASE_URL = 'https://ffoarsbuqrlbpkvaxvha.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_l7lnXsEMcrB0whXR6GCbIw_M4bwwCpe';
+
+// If already logged in, redirect
+if (localStorage.getItem('heela_session')) {
+  window.location.href = '/dashboard.html';
+}
+
+async function handleLogin() {
+  const email    = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const btn      = document.getElementById('login-btn');
+  const errEl    = document.getElementById('error-msg');
+  errEl.style.display = 'none';
+
+  if (!email || !password) {
+    errEl.textContent = 'Please enter your email and password.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Signing in...';
+
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    errEl.textContent = data.error_description || data.msg || 'Invalid email or password.';
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Sign in →';
+    return;
+  }
+
+  localStorage.setItem('heela_session', JSON.stringify(data));
+  window.location.href = '/dashboard.html';
+}
+</script>
+</body>
+</html>

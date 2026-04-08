@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messages — Heela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --green-900: #1B3D2F; --green-800: #234E3B; --green-700: #2B5A45;
+  --green-600: #366B53; --green-500: #3E7A5E; --green-400: #5A9A7A;
+  --green-300: #7BAF96; --green-200: #A8CDB8; --green-100: #D4E8DC; --green-50: #EBF3EE;
+  --warm-100: #F3EFE8; --warm-50: #F7F4EF; --white: #FFFCF7;
+  --text-primary: #1a1a1a; --text-secondary: #5a5a5a; --text-muted: #8a8a8a;
+  --sidebar-w: 240px;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Outfit', sans-serif; background: var(--warm-50); color: var(--text-primary); height: 100vh; display: flex; overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w); background: var(--green-900);
+  display: flex; flex-direction: column;
+  flex-shrink: 0; padding: 1.5rem 1rem;
+}
+.sidebar-logo { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--green-100); text-decoration: none; padding: 0.5rem 0.75rem; margin-bottom: 2rem; display: block; }
+.sidebar-logo span { font-size: 0.75rem; font-family: 'Outfit', sans-serif; display: block; color: var(--green-400); letter-spacing: 0.05em; font-weight: 400; margin-top: 0.1rem; }
+.nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 10px; text-decoration: none; color: rgba(255,255,255,0.6); font-size: 0.9rem; font-weight: 400; transition: all 0.2s; margin-bottom: 0.25rem; }
+.nav-item:hover { background: rgba(255,255,255,0.08); color: var(--white); }
+.nav-item.active { background: rgba(255,255,255,0.12); color: var(--white); }
+.nav-item svg { flex-shrink: 0; opacity: 0.7; }
+.nav-item.active svg { opacity: 1; }
+.sidebar-bottom { margin-top: auto; }
+.sign-out { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 10px; color: rgba(255,255,255,0.4); font-size: 0.85rem; cursor: pointer; transition: all 0.2s; background: none; border: none; font-family: 'Outfit', sans-serif; width: 100%; }
+.sign-out:hover { color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.06); }
+
+/* CHAT LAYOUT */
+.chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* CHAT HEADER */
+.chat-header {
+  padding: 1.25rem 1.75rem;
+  background: var(--white);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  display: flex; align-items: center; gap: 1rem;
+  flex-shrink: 0;
+}
+.chat-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--green-200); display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 1rem; color: var(--green-800); flex-shrink: 0; }
+.chat-header-info h2 { font-family: 'DM Serif Display', serif; font-size: 1.15rem; color: var(--green-900); }
+.chat-header-info p { font-size: 0.8rem; color: var(--text-muted); }
+.monitor-badge { margin-left: auto; display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--text-muted); background: var(--warm-50); padding: 0.35rem 0.75rem; border-radius: 100px; border: 1px solid rgba(0,0,0,0.06); flex-shrink: 0; }
+
+/* MESSAGES */
+.messages-list { flex: 1; overflow-y: auto; padding: 1.5rem 1.75rem; display: flex; flex-direction: column; gap: 1rem; }
+
+.msg-group { display: flex; flex-direction: column; gap: 0.25rem; }
+.msg-group.me { align-items: flex-end; }
+.msg-group.them { align-items: flex-start; }
+
+.msg-sender-name { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem; padding: 0 0.5rem; }
+
+.bubble {
+  max-width: 68%; padding: 0.75rem 1rem;
+  border-radius: 18px; line-height: 1.5; font-size: 0.9rem;
+  word-break: break-word;
+}
+.me .bubble { background: var(--green-800); color: var(--white); border-bottom-right-radius: 4px; }
+.them .bubble { background: var(--white); color: var(--text-primary); border: 1px solid rgba(0,0,0,0.07); border-bottom-left-radius: 4px; }
+
+.msg-time { font-size: 0.7rem; color: var(--text-muted); padding: 0 0.5rem; margin-top: 0.15rem; }
+
+.date-divider { text-align: center; font-size: 0.75rem; color: var(--text-muted); padding: 0.5rem 0; position: relative; }
+.date-divider::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0,0,0,0.06); z-index: 0; }
+.date-divider span { background: var(--warm-50); padding: 0 0.75rem; position: relative; z-index: 1; }
+
+.no-fellow-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem; }
+.no-fellow-icon { width: 64px; height: 64px; background: var(--green-50); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; }
+.no-fellow-state h3 { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--green-900); margin-bottom: 0.5rem; }
+.no-fellow-state p { font-size: 0.875rem; color: var(--text-muted); max-width: 300px; line-height: 1.6; }
+
+/* INPUT */
+.chat-input-bar {
+  padding: 1rem 1.75rem;
+  background: var(--white);
+  border-top: 1px solid rgba(0,0,0,0.06);
+  display: flex; gap: 0.75rem; align-items: flex-end;
+  flex-shrink: 0;
+}
+.chat-input-bar textarea {
+  flex: 1; resize: none; border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 12px; padding: 0.75rem 1rem;
+  font-family: 'Outfit', sans-serif; font-size: 0.9rem;
+  color: var(--text-primary); background: var(--warm-50);
+  outline: none; line-height: 1.5; max-height: 120px;
+  transition: border-color 0.2s;
+}
+.chat-input-bar textarea::placeholder { color: var(--text-muted); }
+.chat-input-bar textarea:focus { border-color: var(--green-500); background: var(--white); }
+.send-btn {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--green-800); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, transform 0.15s; flex-shrink: 0;
+}
+.send-btn:hover { background: var(--green-700); transform: scale(1.05); }
+.send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.send-btn svg { color: white; }
+
+/* LOADING */
+.loading { display: flex; align-items: center; justify-content: center; flex: 1; }
+.spinner { width: 28px; height: 28px; border: 3px solid var(--green-100); border-top-color: var(--green-600); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .mobile-header { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem; background: var(--white); border-bottom: 1px solid rgba(0,0,0,0.06); }
+  .mobile-logo { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: var(--green-800); text-decoration: none; }
+  .messages-list { padding: 1rem 1.25rem; }
+  .chat-input-bar { padding: 0.75rem 1rem; }
+  .bubble { max-width: 85%; }
+  .monitor-badge { display: none; }
+}
+@media (min-width: 769px) { .mobile-header { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <a href="/" class="sidebar-logo">Heela <span>Student Portal</span></a>
+  <a href="/dashboard.html" class="nav-item">
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/></svg>
+    Dashboard
+  </a>
+  <a href="/messages.html" class="nav-item active">
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 012 2v10a2 2 0 01-2 2H7l-4 3V6a2 2 0 012-2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    Messages
+  </a>
+  <a href="/profile.html" class="nav-item">
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    Profile
+  </a>
+  <div class="sidebar-bottom">
+    <button class="sign-out" onclick="signOut()">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Sign out
+    </button>
+  </div>
+</aside>
+
+<!-- CHAT -->
+<div class="chat-area">
+  <div class="mobile-header">
+    <a href="/" class="mobile-logo">Heela</a>
+    <a href="/dashboard.html" style="margin-left:auto; font-size:0.85rem; color:#5a5a5a; text-decoration:none;">← Dashboard</a>
+  </div>
+
+  <div class="loading" id="loading"><div class="spinner"></div></div>
+
+  <div id="chat-ui" style="display:contents;">
+    <!-- Header injected by JS -->
+    <div id="chat-header-wrap"></div>
+    <!-- Messages -->
+    <div class="messages-list" id="messages-list"></div>
+    <!-- Input -->
+    <div id="input-wrap"></div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://ffoarsbuqrlbpkvaxvha.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_l7lnXsEMcrB0whXR6GCbIw_M4bwwCpe';
+
+let currentAssignmentId = null;
+let currentStudent = null;
+let currentFellow   = null;
+let pollInterval    = null;
+let lastMsgCount    = 0;
+
+function getSession() {
+  const s = localStorage.getItem('heela_session');
+  return s ? JSON.parse(s) : null;
+}
+function signOut() { localStorage.removeItem('heela_session'); window.location.href = '/login.html'; }
+function authHeaders(token) {
+  return { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+}
+
+function formatTime(ts) {
+  const d = new Date(ts);
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+function formatDate(ts) {
+  const d = new Date(ts);
+  const today = new Date();
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+  if (d.toDateString() === today.toDateString()) return 'Today';
+  if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
+  return d.toLocaleDateString([], { month: 'long', day: 'numeric' });
+}
+
+function renderMessages(msgs) {
+  const list = document.getElementById('messages-list');
+  if (msgs.length === lastMsgCount) return;
+  lastMsgCount = msgs.length;
+
+  let html = '';
+  let lastDate = null;
+  let lastSender = null;
+
+  msgs.forEach(m => {
+    const d = formatDate(m.created_at);
+    if (d !== lastDate) {
+      html += `<div class="date-divider"><span>${d}</span></div>`;
+      lastDate = d; lastSender = null;
+    }
+    const isMe = m.sender_role === 'student';
+    const cls  = isMe ? 'me' : 'them';
+    const showName = lastSender !== m.sender_role;
+    lastSender = m.sender_role;
+    const name = isMe ? (currentStudent?.first_name || 'You') : (currentFellow?.first_name || 'Fellow');
+    html += `<div class="msg-group ${cls}">
+      ${showName ? `<span class="msg-sender-name">${name}</span>` : ''}
+      <div class="bubble">${escHtml(m.content)}</div>
+      <span class="msg-time">${formatTime(m.created_at)}</span>
+    </div>`;
+  });
+
+  list.innerHTML = html || '<div style="text-align:center;padding:2rem;color:var(--text-muted);font-size:0.875rem;">No messages yet. Send the first one!</div>';
+  list.scrollTop = list.scrollHeight;
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+}
+
+async function sendMessage() {
+  const session = getSession();
+  const textarea = document.getElementById('msg-input');
+  const content = textarea.value.trim();
+  if (!content || !currentAssignmentId) return;
+
+  const btn = document.getElementById('send-btn');
+  btn.disabled = true;
+  textarea.value = '';
+  textarea.style.height = 'auto';
+
+  await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+    method: 'POST',
+    headers: { ...authHeaders(session.access_token), 'Prefer': 'return=minimal' },
+    body: JSON.stringify({
+      assignment_id: currentAssignmentId,
+      sender_id: session.user.id,
+      sender_role: 'student',
+      content: content
+    })
+  });
+
+  btn.disabled = false;
+  await fetchMessages();
+}
+
+async function fetchMessages() {
+  const session = getSession();
+  if (!currentAssignmentId) return;
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/messages?assignment_id=eq.${currentAssignmentId}&order=created_at.asc`, {
+    headers: authHeaders(session.access_token)
+  });
+  const msgs = await res.json();
+  renderMessages(msgs);
+}
+
+function renderInput() {
+  document.getElementById('input-wrap').innerHTML = `
+    <div class="chat-input-bar">
+      <textarea id="msg-input" placeholder="Write a message..." rows="1"
+        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+      <button class="send-btn" id="send-btn" onclick="sendMessage()">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  `;
+}
+
+async function init() {
+  const session = getSession();
+  if (!session) { window.location.href = '/login.html'; return; }
+  const token  = session.access_token;
+  const userId = session.user.id;
+
+  const sRes = await fetch(`${SUPABASE_URL}/rest/v1/students?auth_id=eq.${userId}&limit=1`, { headers: authHeaders(token) });
+  const students = await sRes.json();
+  currentStudent = students[0];
+
+  document.getElementById('loading').style.display = 'none';
+
+  if (!currentStudent) {
+    document.getElementById('messages-list').innerHTML = `
+      <div class="no-fellow-state">
+        <div class="no-fellow-icon"><svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 012 2v10a2 2 0 01-2 2H7l-4 3V6a2 2 0 012-2z" stroke="#3E7A5E" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+        <h3>Profile not found</h3>
+        <p>We couldn't find your student profile. Please contact hello@heela.org.</p>
+      </div>`;
+    return;
+  }
+
+  const aRes = await fetch(`${SUPABASE_URL}/rest/v1/assignments?student_id=eq.${currentStudent.id}&status=eq.active&limit=1`, { headers: authHeaders(token) });
+  const assignments = await aRes.json();
+  const assignment  = assignments[0];
+
+  if (!assignment) {
+    document.getElementById('chat-header-wrap').innerHTML = `
+      <div class="chat-header">
+        <div class="chat-avatar"><svg width="20" height="20" fill="none" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 012 2v10a2 2 0 01-2 2H7l-4 3V6a2 2 0 012-2z" stroke="#2B5A45" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+        <div class="chat-header-info"><h2>Messages</h2><p>No Fellow assigned yet</p></div>
+      </div>`;
+    document.getElementById('messages-list').innerHTML = `
+      <div class="no-fellow-state">
+        <div class="no-fellow-icon"><svg width="28" height="28" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="#3E7A5E" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#3E7A5E" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <h3>Your Fellow is coming</h3>
+        <p>Once we assign your Fellow, you'll be able to message them directly here. We'll let you know as soon as it happens.</p>
+      </div>`;
+    return;
+  }
+
+  currentAssignmentId = assignment.id;
+
+  const fRes = await fetch(`${SUPABASE_URL}/rest/v1/fellows?id=eq.${assignment.fellow_id}&limit=1`, { headers: authHeaders(token) });
+  const fellows = await fRes.json();
+  currentFellow = fellows[0];
+
+  if (currentFellow) {
+    const initials = currentFellow.first_name[0] + currentFellow.last_name[0];
+    document.getElementById('chat-header-wrap').innerHTML = `
+      <div class="chat-header">
+        <div class="chat-avatar">${initials}</div>
+        <div class="chat-header-info">
+          <h2>${currentFellow.first_name} ${currentFellow.last_name}</h2>
+          <p>${currentFellow.university || 'Student Fellow · Heela'}</p>
+        </div>
+        <div class="monitor-badge">
+          <svg width="12" height="12" fill="none" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          Monitored for safety
+        </div>
+      </div>`;
+  }
+
+  renderInput();
+  await fetchMessages();
+  pollInterval = setInterval(fetchMessages, 5000);
+}
+
+init();
+</script>
+</body>
+</html>
