@@ -93,6 +93,16 @@ nav.scrolled { padding: 0.7rem 2rem; }
   transition: background 0.2s, transform 0.15s !important;
 }
 .nav-donate:hover { background: var(--green-700) !important; transform: translateY(-1px); }
+.nav-signup {
+  background: transparent !important;
+  color: var(--green-800) !important;
+  padding: 0.6rem 1.5rem;
+  border-radius: 100px;
+  font-weight: 500 !important;
+  border: 1.5px solid var(--green-300) !important;
+  transition: all 0.2s !important;
+}
+.nav-signup:hover { border-color: var(--green-600) !important; background: var(--green-50) !important; }
 
 /* HERO */
 .hero {
@@ -881,6 +891,7 @@ footer {
     <a href="#pathway">The journey</a>
     <a href="#about">About</a>
     <a href="#support">Get involved</a>
+    <a href="/signup.html" class="nav-signup">Sign Up</a>
     <a href="#donate" class="nav-donate">Donate</a>
   </div>
   <button class="mobile-menu-btn" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('show')">
@@ -896,7 +907,7 @@ footer {
     <p class="hero-sub">Heela builds structured, ethical pathways to higher education for refugee students across the United States.</p>
     <div class="hero-buttons">
       <a href="#donate" class="btn-primary">Support our first cohort &rarr;</a>
-      <a href="#waitlist" class="btn-secondary">I'm a student</a>
+      <a href="/signup.html" class="btn-secondary">Sign up as a student &rarr;</a>
     </div>
   </div>
 </section>

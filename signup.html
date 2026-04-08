@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up — Heela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --green-900: #1B3D2F;
+  --green-800: #234E3B;
+  --green-700: #2B5A45;
+  --green-600: #366B53;
+  --green-500: #3E7A5E;
+  --green-400: #5A9A7A;
+  --green-300: #7BAF96;
+  --green-200: #A8CDB8;
+  --green-100: #D4E8DC;
+  --green-50: #EBF3EE;
+  --warm-900: #2c2520;
+  --warm-200: #ece6dd;
+  --warm-100: #F3EFE8;
+  --warm-50: #F7F4EF;
+  --text-primary: #1a1a1a;
+  --text-secondary: #5a5a5a;
+  --text-muted: #8a8a8a;
+  --white: #FFFCF7;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  color: var(--text-primary);
+  background: var(--warm-50);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(247, 244, 239, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.nav-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  color: var(--green-800);
+  text-decoration: none;
+}
+.nav-back {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--green-700); }
+
+/* PAGE */
+.signup-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7rem 1.5rem 4rem;
+}
+
+.signup-card {
+  background: var(--white);
+  border-radius: 20px;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 3rem 2.5rem;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 4px 40px rgba(0,0,0,0.06);
+}
+
+.signup-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--green-700);
+  margin-bottom: 1rem;
+  padding: 0.35rem 0.9rem;
+  background: var(--green-100);
+  border-radius: 100px;
+}
+
+.signup-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem;
+  color: var(--green-900);
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.signup-sub {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+.signup-sub a {
+  color: var(--green-700);
+  text-decoration: none;
+  font-weight: 500;
+}
+.signup-sub a:hover { text-decoration: underline; }
+
+/* FORM */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: var(--warm-50);
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  -webkit-appearance: none;
+}
+
+.form-group input::placeholder { color: var(--text-muted); }
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--green-500);
+  background: var(--white);
+}
+
+.form-group input.error { border-color: #e07a5f; }
+
+.form-group select { cursor: pointer; }
+
+.error-msg {
+  display: none;
+  font-size: 0.875rem;
+  color: #c0392b;
+  background: #fef0ec;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.signup-btn {
+  width: 100%;
+  padding: 1rem;
+  background: var(--green-800);
+  color: var(--white);
+  border: none;
+  border-radius: 100px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  margin-top: 0.5rem;
+}
+.signup-btn:hover { background: var(--green-700); transform: translateY(-2px); }
+.signup-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.divider {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 1.25rem 0 0;
+}
+
+/* SUCCESS */
+.success-state {
+  text-align: center;
+  padding: 1rem 0;
+}
+.success-icon {
+  width: 64px;
+  height: 64px;
+  background: var(--green-100);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+.success-icon svg { width: 28px; height: 28px; }
+.success-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem;
+  color: var(--green-900);
+  margin-bottom: 0.5rem;
+}
+.success-sub {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  max-width: 340px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.success-link {
+  color: var(--green-700);
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+.success-link:hover { text-decoration: underline; }
+
+@media (max-width: 560px) {
+  .signup-card { padding: 2rem 1.5rem; }
+  .form-row { grid-template-columns: 1fr; }
+  .signup-title { font-size: 1.7rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">Heela</a>
+  <a href="/" class="nav-back">← Back to site</a>
+</nav>
+
+<main class="signup-page">
+  <div class="signup-card" id="signup-card">
+    <div class="signup-tag">For students</div>
+    <h1 class="signup-title">Create your account</h1>
+    <p class="signup-sub">Already have an account? <a href="/login.html">Sign in</a></p>
+
+    <form id="signup-form" autocomplete="on">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="first-name">First name</label>
+          <input type="text" id="first-name" name="first-name" placeholder="First name" autocomplete="given-name" required>
+        </div>
+        <div class="form-group">
+          <label for="last-name">Last name</label>
+          <input type="text" id="last-name" name="last-name" placeholder="Last name" autocomplete="family-name" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="email" placeholder="you@email.com" autocomplete="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="At least 8 characters" autocomplete="new-password" required>
+      </div>
+      <div class="form-group">
+        <label for="confirm-password">Confirm password</label>
+        <input type="password" id="confirm-password" name="confirm-password" placeholder="Repeat your password" autocomplete="new-password" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="grade">Current grade</label>
+          <select id="grade" name="grade" required>
+            <option value="" disabled selected>Select grade</option>
+            <option value="10">10th grade</option>
+            <option value="11">11th grade (junior)</option>
+            <option value="12">12th grade (senior)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="city-state">City, State</label>
+          <input type="text" id="city-state" name="city-state" placeholder="Salt Lake City, UT" autocomplete="address-level2">
+        </div>
+      </div>
+
+      <div class="error-msg" id="error-msg"></div>
+
+      <button type="button" class="signup-btn" id="signup-btn" onclick="handleSignup()">Create account &rarr;</button>
+      <p class="divider">Free for all students. No cost, ever.</p>
+    </form>
+  </div>
+</main>
+
+<script>
+const SUPABASE_URL = 'https://ffoarsbuqrlbpkvaxvha.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_l7lnXsEMcrB0whXR6GCbIw_M4bwwCpe';
+
+async function handleSignup() {
+  const firstName = document.getElementById('first-name').value.trim();
+  const lastName  = document.getElementById('last-name').value.trim();
+  const email     = document.getElementById('email').value.trim();
+  const password  = document.getElementById('password').value;
+  const confirm   = document.getElementById('confirm-password').value;
+  const grade     = document.getElementById('grade').value;
+  const cityState = document.getElementById('city-state').value.trim();
+
+  hideError();
+
+  if (!firstName || !lastName || !email || !password || !grade) {
+    return showError('Please fill in all required fields.');
+  }
+  if (password.length < 8) {
+    return showError('Password must be at least 8 characters.');
+  }
+  if (password !== confirm) {
+    return showError('Passwords do not match.');
+  }
+
+  const btn = document.getElementById('signup-btn');
+  btn.disabled = true;
+  btn.textContent = 'Creating your account...';
+
+  try {
+    // Create Supabase Auth user
+    const authRes = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify({
+        email,
+        password,
+        options: { data: { first_name: firstName, last_name: lastName } }
+      })
+    });
+
+    const authData = await authRes.json();
+
+    if (!authRes.ok) {
+      const msg = authData.msg || authData.error_description || authData.message || 'Something went wrong. Please try again.';
+      btn.disabled = false;
+      btn.textContent = 'Create account →';
+      return showError(msg);
+    }
+
+    // Save student info to students table
+    await fetch(`${SUPABASE_URL}/rest/v1/students`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        auth_id: authData.user?.id || null,
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        grade: grade,
+        city_state: cityState || null
+      })
+    });
+
+    // Show success
+    document.getElementById('signup-card').innerHTML = `
+      <div class="success-state">
+        <div class="success-icon">
+          <svg viewBox="0 0 28 28" fill="none">
+            <path d="M5 14l6 6L23 8" stroke="#2B5A45" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="success-title">You're in.</p>
+        <p class="success-sub">Check your email to confirm your account. Once confirmed, we'll be in touch about the next steps.</p>
+        <a href="/" class="success-link">← Back to Heela</a>
+      </div>
+    `;
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = 'Create account →';
+    showError('Connection error. Please check your internet and try again.');
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function hideError() {
+  const el = document.getElementById('error-msg');
+  if (el) el.style.display = 'none';
+}
+</script>
+</body>
+</html>
