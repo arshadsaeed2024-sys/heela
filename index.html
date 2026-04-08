@@ -1296,11 +1296,35 @@ async function handleWaitlist() {
   });
   if (!valid) return;
 
-  const email = form.querySelector('input[name="email"]').value;
   const firstName = form.querySelector('input[name="first-name"]').value;
+  const lastName = form.querySelector('input[name="last-name"]').value;
+  const email = form.querySelector('input[name="email"]').value;
+  const phone = form.querySelector('input[name="phone"]').value;
+  const grade = form.querySelector('select[name="grade"]').value;
+  const cityState = form.querySelector('input[name="city-state"]').value;
 
+  // Save to Supabase
+  await fetch('https://ffoarsbuqrlbpkvaxvha.supabase.co/rest/v1/waitlist', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': 'sb_publishable_l7lnXsEMcrB0whXR6GCbIw_M4bwwCpe',
+      'Authorization': 'Bearer sb_publishable_l7lnXsEMcrB0whXR6GCbIw_M4bwwCpe',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      phone: phone || null,
+      grade: grade,
+      city_state: cityState || null
+    })
+  });
+
+  // Netlify Forms backup
   const formData = new FormData(form);
-  await fetch('/', { method: 'POST', body: formData });
+  fetch('/', { method: 'POST', body: formData }).catch(() => {});
 
   sendThankYouEmail(email, firstName);
 
