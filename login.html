@@ -72,9 +72,16 @@ input:focus { border-color: var(--green-500); background: var(--white); }
 const SUPABASE_URL = 'https://ffoarsbuqrlbpkvaxvha.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_l7lnXsEMcrB0whXR6GCbIw_M4bwwCpe';
 
-// If already logged in, redirect
-if (localStorage.getItem('heela_session')) {
-  window.location.href = '/dashboard.html';
+// If already logged in, redirect based on role
+const _existingSession = localStorage.getItem('heela_session');
+if (_existingSession) {
+  try {
+    const _s = JSON.parse(_existingSession);
+    const _role = _s.user && _s.user.user_metadata && _s.user.user_metadata.role;
+    window.location.href = _role === 'fellow' ? '/fellow-dashboard.html' : '/dashboard.html';
+  } catch(e) {
+    window.location.href = '/dashboard.html';
+  }
 }
 
 async function handleLogin() {
@@ -110,7 +117,8 @@ async function handleLogin() {
   }
 
   localStorage.setItem('heela_session', JSON.stringify(data));
-  window.location.href = '/dashboard.html';
+  const role = data.user && data.user.user_metadata && data.user.user_metadata.role;
+  window.location.href = role === 'fellow' ? '/fellow-dashboard.html' : '/dashboard.html';
 }
 </script>
 </body>
