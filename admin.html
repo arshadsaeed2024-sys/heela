@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Heela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --green-900: #1B3D2F; --green-800: #234E3B; --green-700: #2B5A45;
+  --green-600: #366B53; --green-500: #3E7A5E; --green-300: #7BAF96;
+  --green-100: #D4E8DC; --green-50: #EBF3EE;
+  --warm-50: #F7F4EF; --warm-100: #F3EFE8; --white: #FFFCF7;
+  --text-primary: #1a1a1a; --text-secondary: #5a5a5a; --text-muted: #8a8a8a;
+  --sidebar-w: 220px;
+  --red: #e74c3c; --orange: #e67e22; --blue: #2980b9;
+}
+html, body { height: 100%; font-family: 'Outfit', sans-serif; background: var(--warm-50); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+
+/* LAYOUT */
+.layout { display: flex; height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  background: var(--green-900); display: flex; flex-direction: column;
+  padding: 1.5rem 0; overflow-y: auto;
+}
+.sidebar-logo {
+  font-family: 'DM Serif Display', serif; font-size: 1.4rem;
+  color: var(--white); padding: 0 1.25rem 0.25rem; text-decoration: none;
+}
+.sidebar-role {
+  font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--green-300); padding: 0 1.25rem 1.5rem;
+}
+.sidebar-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 0.5rem 1rem 0.75rem; }
+.nav-item {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.65rem 1.25rem; font-size: 0.875rem; font-weight: 400;
+  color: rgba(255,255,255,0.65); cursor: pointer; transition: all 0.15s;
+  border-left: 3px solid transparent; text-decoration: none;
+}
+.nav-item:hover { color: var(--white); background: rgba(255,255,255,0.05); }
+.nav-item.active { color: var(--white); border-left-color: var(--green-300); background: rgba(255,255,255,0.07); }
+.nav-item svg { opacity: 0.7; flex-shrink: 0; }
+.nav-item.active svg { opacity: 1; }
+.sidebar-bottom { margin-top: auto; padding: 1rem 1.25rem 0; }
+.signout-btn {
+  font-size: 0.8rem; color: rgba(255,255,255,0.4); background: none;
+  border: none; cursor: pointer; font-family: inherit; padding: 0;
+}
+.signout-btn:hover { color: rgba(255,255,255,0.7); }
+
+/* MAIN */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.topbar {
+  padding: 1rem 1.75rem; border-bottom: 1px solid rgba(0,0,0,0.07);
+  background: var(--white); display: flex; align-items: center; justify-content: space-between;
+}
+.topbar-title { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--green-900); }
+.topbar-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.1rem; }
+.content { flex: 1; overflow-y: auto; padding: 1.75rem; }
+
+/* SECTIONS */
+.section { display: none; }
+.section.active { display: block; }
+
+/* STATS ROW */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.75rem; }
+.stat-card {
+  background: var(--white); border-radius: 14px; border: 1px solid rgba(0,0,0,0.07);
+  padding: 1.25rem 1.5rem;
+}
+.stat-label { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.4rem; }
+.stat-val { font-family: 'DM Serif Display', serif; font-size: 2.2rem; color: var(--green-900); line-height: 1; }
+.stat-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+/* CARDS / TABLES */
+.card {
+  background: var(--white); border-radius: 14px; border: 1px solid rgba(0,0,0,0.07);
+  overflow: hidden; margin-bottom: 1.5rem;
+}
+.card-header {
+  padding: 1rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.06);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-title { font-size: 0.9rem; font-weight: 600; color: var(--green-900); }
+.card-count { font-size: 0.75rem; color: var(--text-muted); background: var(--warm-50); padding: 0.2rem 0.6rem; border-radius: 100px; }
+table { width: 100%; border-collapse: collapse; }
+th { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); padding: 0.75rem 1.5rem; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.06); background: var(--warm-50); }
+td { padding: 0.85rem 1.5rem; font-size: 0.875rem; border-bottom: 1px solid rgba(0,0,0,0.04); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(0,0,0,0.015); }
+
+/* BADGES */
+.badge {
+  display: inline-block; font-size: 0.7rem; font-weight: 500; padding: 0.2rem 0.6rem;
+  border-radius: 100px; letter-spacing: 0.04em;
+}
+.badge-green { background: var(--green-100); color: var(--green-700); }
+.badge-orange { background: #fef3e2; color: #d97706; }
+.badge-red { background: #fef2f2; color: #dc2626; }
+.badge-blue { background: #eff6ff; color: #2563eb; }
+.badge-gray { background: #f3f4f6; color: #6b7280; }
+
+/* AVATAR */
+.avatar {
+  width: 32px; height: 32px; border-radius: 50%; display: inline-flex;
+  align-items: center; justify-content: center; font-size: 0.75rem;
+  font-weight: 600; color: white; flex-shrink: 0;
+}
+.name-cell { display: flex; align-items: center; gap: 0.6rem; }
+
+/* ASSIGN SECTION */
+.assign-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.assign-list { list-style: none; }
+.assign-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.85rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.04); cursor: pointer;
+  transition: background 0.1s;
+}
+.assign-item:last-child { border-bottom: none; }
+.assign-item:hover { background: var(--green-50); }
+.assign-item.selected { background: var(--green-100); }
+.assign-info { display: flex; align-items: center; gap: 0.6rem; }
+.assign-meta { font-size: 0.75rem; color: var(--text-muted); }
+
+/* ASSIGN ACTION BAR */
+.assign-bar {
+  background: var(--green-900); color: white; border-radius: 12px;
+  padding: 1rem 1.5rem; margin-bottom: 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  display: none;
+}
+.assign-bar.visible { display: flex; }
+.assign-bar-text { font-size: 0.875rem; }
+.assign-bar-text strong { font-weight: 600; }
+.assign-bar-btn {
+  background: white; color: var(--green-900); border: none; border-radius: 100px;
+  padding: 0.5rem 1.2rem; font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; font-family: inherit; transition: opacity 0.15s;
+}
+.assign-bar-btn:hover { opacity: 0.85; }
+.assign-bar-cancel {
+  background: none; border: none; color: rgba(255,255,255,0.6);
+  cursor: pointer; font-family: inherit; font-size: 0.8rem; margin-left: 0.75rem;
+}
+
+/* MESSAGES */
+.msg-bubble-preview {
+  max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 0.85rem; color: var(--text-secondary);
+}
+
+/* EMPTY STATE */
+.empty { text-align: center; padding: 3rem 1rem; color: var(--text-muted); font-size: 0.9rem; }
+
+/* LOADING */
+.loading { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 0.875rem; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999;
+  background: var(--green-800); color: white; padding: 0.75rem 1.25rem;
+  border-radius: 10px; font-size: 0.875rem; opacity: 0; pointer-events: none;
+  transition: opacity 0.3s; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.toast.show { opacity: 1; }
+
+@media (max-width: 768px) {
+  .sidebar { width: 60px; min-width: 60px; }
+  .sidebar-logo, .sidebar-role, .nav-item span, .signout-btn { display: none; }
+  .nav-item { justify-content: center; padding: 0.75rem; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .assign-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <a href="/" class="sidebar-logo">Heela</a>
+  <div class="sidebar-role">Admin Panel</div>
+  <div class="sidebar-divider"></div>
+
+  <nav>
+    <a class="nav-item active" data-section="overview" onclick="showSection('overview',this)">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span>Overview</span>
+    </a>
+    <a class="nav-item" data-section="students" onclick="showSection('students',this)">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Students</span>
+    </a>
+    <a class="nav-item" data-section="fellows" onclick="showSection('fellows',this)">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Fellows</span>
+    </a>
+    <a class="nav-item" data-section="assign" onclick="showSection('assign',this)">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+      <span>Assign</span>
+    </a>
+    <a class="nav-item" data-section="messages" onclick="showSection('messages',this)">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Messages</span>
+    </a>
+    <a class="nav-item" data-section="waitlist" onclick="showSection('waitlist',this)">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      <span>Waitlist</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <button class="signout-btn" onclick="signOut()">Sign out</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbar-title">Overview</div>
+      <div class="topbar-sub" id="topbar-sub">Welcome back, Arshad</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- OVERVIEW -->
+    <div class="section active" id="section-overview">
+      <div class="stats-row" id="stats-row">
+        <div class="stat-card"><div class="stat-label">Students</div><div class="stat-val" id="stat-students">—</div><div class="stat-sub">signed up</div></div>
+        <div class="stat-card"><div class="stat-label">Fellows</div><div class="stat-val" id="stat-fellows">—</div><div class="stat-sub">applications</div></div>
+        <div class="stat-card"><div class="stat-label">Assigned</div><div class="stat-val" id="stat-assigned">—</div><div class="stat-sub">student-Fellow pairs</div></div>
+        <div class="stat-card"><div class="stat-label">Waitlist</div><div class="stat-val" id="stat-waitlist">—</div><div class="stat-sub">interested</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Unassigned Students</span>
+          <span class="card-count" id="unassigned-count">—</span>
+        </div>
+        <div id="unassigned-list"><div class="loading">Loading...</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">Recent Messages</span></div>
+        <div id="overview-messages"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- STUDENTS -->
+    <div class="section" id="section-students">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">All Students</span>
+          <span class="card-count" id="students-count">—</span>
+        </div>
+        <div id="students-table"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- FELLOWS -->
+    <div class="section" id="section-fellows">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">All Fellows</span>
+          <span class="card-count" id="fellows-count">—</span>
+        </div>
+        <div id="fellows-table"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ASSIGN -->
+    <div class="section" id="section-assign">
+      <div class="assign-bar" id="assign-bar">
+        <div class="assign-bar-text" id="assign-bar-text">Select a Fellow to assign to <strong id="assign-student-name">—</strong></div>
+        <div>
+          <button class="assign-bar-btn" id="assign-confirm-btn" onclick="confirmAssign()" style="display:none">Confirm assignment</button>
+          <button class="assign-bar-cancel" onclick="clearAssign()">Cancel</button>
+        </div>
+      </div>
+      <div class="assign-grid">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Unassigned Students</span><span class="card-count" id="assign-unassigned-count">—</span></div>
+          <ul class="assign-list" id="assign-students-list"><li class="loading">Loading...</li></ul>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Fellows</span><span class="card-count" id="assign-fellows-count">—</span></div>
+          <ul class="assign-list" id="assign-fellows-list"><li class="loading">Loading...</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="section" id="section-messages">
+      <div class="card">
+        <div class="card-header"><span class="card-title">All Messages</span><span class="card-count" id="messages-count">—</span></div>
+        <div id="messages-table"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- WAITLIST -->
+    <div class="section" id="section-waitlist">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Waitlist</span><span class="card-count" id="waitlist-count">—</span></div>
+        <div id="waitlist-table"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://ffoarsbuqrlbpkvaxvha.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_l7lnXsEMcrB0whXR6GCbIw_M4bwwCpe';
+
+// Auth check
+const _raw = localStorage.getItem('heela_session');
+if (!_raw) { window.location.href = '/login.html'; }
+let SESSION;
+try {
+  SESSION = JSON.parse(_raw);
+  const role = SESSION.user?.user_metadata?.role;
+  if (role !== 'admin') { window.location.href = '/dashboard.html'; }
+} catch(e) { window.location.href = '/login.html'; }
+
+const TOKEN = SESSION.access_token;
+
+function headers(extra) {
+  return Object.assign({
+    'apikey': SUPABASE_ANON_KEY,
+    'Authorization': `Bearer ${TOKEN}`,
+    'Content-Type': 'application/json'
+  }, extra || {});
+}
+
+async function db(path) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers: headers() });
+  return res.json();
+}
+
+// ----- COLORS -----
+const COLORS = ['#2B5A45','#366B53','#3E7A5E','#5A9A7A','#7BAF96','#2980b9','#8e44ad','#c0392b','#d35400','#16a085'];
+function colorFor(str) { let h=0; for(let c of (str||'')) h=(h*31+c.charCodeAt(0))&0xffff; return COLORS[h%COLORS.length]; }
+function initials(f,l) { return ((f||'')[0]||(l||'')[0]||'?').toUpperCase() + ((l||'')[0]||'').toUpperCase(); }
+function avatar(f,l) {
+  const bg = colorFor((f||'')+(l||''));
+  return `<div class="avatar" style="background:${bg}">${initials(f,l)}</div>`;
+}
+
+// ----- TOAST -----
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ----- NAV -----
+const TITLES = { overview:'Overview', students:'Students', fellows:'Fellows', assign:'Assign Fellows', messages:'Messages', waitlist:'Waitlist' };
+function showSection(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('section-'+id).classList.add('active');
+  el.classList.add('active');
+  document.getElementById('topbar-title').textContent = TITLES[id];
+  document.getElementById('topbar-sub').textContent = '';
+  loadSection(id);
+}
+
+// ----- DATA CACHE -----
+let DATA = { students:null, fellows:null, assignments:null, messages:null, waitlist:null };
+
+async function loadAll() {
+  const [students, fellows, assignments, messages, waitlist] = await Promise.all([
+    db('students?select=*&order=created_at.desc'),
+    db('fellows?select=*&order=created_at.desc'),
+    db('assignments?select=*'),
+    db('messages?select=*&order=created_at.desc&limit=100'),
+    db('waitlist?select=*&order=created_at.desc')
+  ]);
+  DATA.students = Array.isArray(students) ? students : [];
+  DATA.fellows = Array.isArray(fellows) ? fellows : [];
+  DATA.assignments = Array.isArray(assignments) ? assignments : [];
+  DATA.messages = Array.isArray(messages) ? messages : [];
+  DATA.waitlist = Array.isArray(waitlist) ? waitlist : [];
+}
+
+function getAssignedStudentIds() {
+  return new Set(DATA.assignments.map(a => a.student_id));
+}
+function getFellowForStudent(studentId) {
+  const a = DATA.assignments.find(a => a.student_id === studentId);
+  if (!a) return null;
+  return DATA.fellows.find(f => f.id === a.fellow_id) || null;
+}
+function getStudentsForFellow(fellowId) {
+  return DATA.assignments.filter(a => a.fellow_id === fellowId).length;
+}
+
+// ----- RENDER -----
+function renderOverview() {
+  const assigned = getAssignedStudentIds();
+  const unassigned = DATA.students.filter(s => !assigned.has(s.id));
+
+  document.getElementById('stat-students').textContent = DATA.students.length;
+  document.getElementById('stat-fellows').textContent = DATA.fellows.length;
+  document.getElementById('stat-assigned').textContent = DATA.assignments.length;
+  document.getElementById('stat-waitlist').textContent = DATA.waitlist.length;
+  document.getElementById('unassigned-count').textContent = unassigned.length;
+
+  if (unassigned.length === 0) {
+    document.getElementById('unassigned-list').innerHTML = '<div class="empty">All students are assigned</div>';
+  } else {
+    document.getElementById('unassigned-list').innerHTML = `
+      <table>
+        <thead><tr><th>Name</th><th>Grade</th><th>City</th><th>Email</th></tr></thead>
+        <tbody>
+          ${unassigned.map(s => `
+            <tr>
+              <td><div class="name-cell">${avatar(s.first_name,s.last_name)}<span>${s.first_name} ${s.last_name}</span></div></td>
+              <td><span class="badge badge-orange">${s.grade||'—'}</span></td>
+              <td>${s.city_state||'—'}</td>
+              <td style="color:var(--text-muted)">${s.email}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  const recent = DATA.messages.slice(0, 8);
+  if (recent.length === 0) {
+    document.getElementById('overview-messages').innerHTML = '<div class="empty">No messages yet</div>';
+  } else {
+    document.getElementById('overview-messages').innerHTML = `
+      <table>
+        <thead><tr><th>Message</th><th>Role</th><th>Time</th></tr></thead>
+        <tbody>
+          ${recent.map(m => `
+            <tr>
+              <td><div class="msg-bubble-preview">${escHtml(m.content||'')}</div></td>
+              <td><span class="badge ${m.sender_role==='fellow'?'badge-blue':'badge-green'}">${m.sender_role||'—'}</span></td>
+              <td style="color:var(--text-muted);font-size:0.8rem">${timeAgo(m.created_at)}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }
+}
+
+function renderStudents() {
+  document.getElementById('students-count').textContent = DATA.students.length;
+  if (DATA.students.length === 0) {
+    document.getElementById('students-table').innerHTML = '<div class="empty">No students yet</div>';
+    return;
+  }
+  const assignedIds = getAssignedStudentIds();
+  document.getElementById('students-table').innerHTML = `
+    <table>
+      <thead><tr><th>Name</th><th>Email</th><th>Grade</th><th>City</th><th>Phase</th><th>Week</th><th>Fellow</th></tr></thead>
+      <tbody>
+        ${DATA.students.map(s => {
+          const fellow = getFellowForStudent(s.id);
+          return `<tr>
+            <td><div class="name-cell">${avatar(s.first_name,s.last_name)}<span>${s.first_name} ${s.last_name}</span></div></td>
+            <td style="color:var(--text-muted);font-size:0.82rem">${s.email}</td>
+            <td><span class="badge badge-orange">${s.grade||'—'}</span></td>
+            <td>${s.city_state||'—'}</td>
+            <td><span class="badge badge-green">Phase ${s.phase||1}</span></td>
+            <td>${s.current_week||1}</td>
+            <td>${fellow ? `<span class="badge badge-blue">${fellow.first_name} ${fellow.last_name}</span>` : '<span class="badge badge-gray">Unassigned</span>'}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+
+function renderFellows() {
+  document.getElementById('fellows-count').textContent = DATA.fellows.length;
+  if (DATA.fellows.length === 0) {
+    document.getElementById('fellows-table').innerHTML = '<div class="empty">No Fellows yet</div>';
+    return;
+  }
+  document.getElementById('fellows-table').innerHTML = `
+    <table>
+      <thead><tr><th>Name</th><th>Email</th><th>University</th><th>Students</th><th>Capacity</th></tr></thead>
+      <tbody>
+        ${DATA.fellows.map(f => {
+          const count = getStudentsForFellow(f.id);
+          const pct = Math.round((count/5)*100);
+          return `<tr>
+            <td><div class="name-cell">${avatar(f.first_name,f.last_name)}<span>${f.first_name} ${f.last_name}</span></div></td>
+            <td style="color:var(--text-muted);font-size:0.82rem">${f.email}</td>
+            <td>${f.university||'—'}</td>
+            <td><span class="badge ${count>=5?'badge-red':count>=3?'badge-orange':'badge-green'}">${count}/5</span></td>
+            <td>
+              <div style="display:flex;align-items:center;gap:0.5rem">
+                <div style="flex:1;height:6px;background:#eee;border-radius:99px;overflow:hidden">
+                  <div style="height:100%;width:${pct}%;background:${count>=5?'#dc2626':count>=3?'#d97706':'var(--green-500)'};border-radius:99px"></div>
+                </div>
+                <span style="font-size:0.75rem;color:var(--text-muted)">${5-count} open</span>
+              </div>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+
+// ----- ASSIGN LOGIC -----
+let selectedStudent = null;
+let selectedFellow = null;
+
+function renderAssign() {
+  const assignedIds = getAssignedStudentIds();
+  const unassigned = DATA.students.filter(s => !assignedIds.has(s.id));
+
+  document.getElementById('assign-unassigned-count').textContent = unassigned.length;
+  document.getElementById('assign-fellows-count').textContent = DATA.fellows.length;
+
+  const sList = document.getElementById('assign-students-list');
+  if (unassigned.length === 0) {
+    sList.innerHTML = '<li class="empty">All students assigned</li>';
+  } else {
+    sList.innerHTML = unassigned.map(s => `
+      <li class="assign-item" id="student-item-${s.id}" onclick="selectStudent('${s.id}','${escAttr(s.first_name+' '+s.last_name)}')">
+        <div class="assign-info">
+          ${avatar(s.first_name,s.last_name)}
+          <div>
+            <div style="font-size:0.875rem;font-weight:500">${s.first_name} ${s.last_name}</div>
+            <div class="assign-meta">${s.grade||'—'} · ${s.city_state||'—'}</div>
+          </div>
+        </div>
+      </li>`).join('');
+  }
+
+  const fList = document.getElementById('assign-fellows-list');
+  if (DATA.fellows.length === 0) {
+    fList.innerHTML = '<li class="empty">No Fellows yet</li>';
+  } else {
+    fList.innerHTML = DATA.fellows.map(f => {
+      const count = getStudentsForFellow(f.id);
+      return `
+        <li class="assign-item ${count>=5?'':''}">
+          <div class="assign-info" id="fellow-item-${f.id}" onclick="${count<5?`selectFellow('${f.id}','${escAttr(f.first_name+' '+f.last_name)}')`:''}" style="${count>=5?'opacity:0.4;cursor:not-allowed':'cursor:pointer'}">
+            ${avatar(f.first_name,f.last_name)}
+            <div>
+              <div style="font-size:0.875rem;font-weight:500">${f.first_name} ${f.last_name}</div>
+              <div class="assign-meta">${f.university||'—'} · ${count}/5 students</div>
+            </div>
+          </div>
+          <span class="badge ${count>=5?'badge-red':count>=3?'badge-orange':'badge-green'}">${count}/5</span>
+        </li>`;
+    }).join('');
+  }
+}
+
+function selectStudent(id, name) {
+  selectedStudent = id;
+  selectedFellow = null;
+  document.querySelectorAll('#assign-students-list .assign-item').forEach(el => el.classList.remove('selected'));
+  document.getElementById('student-item-'+id)?.classList.add('selected');
+  document.querySelectorAll('#assign-fellows-list .assign-item').forEach(el => el.classList.remove('selected'));
+  document.getElementById('assign-student-name').textContent = name;
+  document.getElementById('assign-bar-text').innerHTML = `Select a Fellow to assign to <strong>${escHtml(name)}</strong>`;
+  document.getElementById('assign-confirm-btn').style.display = 'none';
+  document.getElementById('assign-bar').classList.add('visible');
+}
+
+function selectFellow(id, name) {
+  if (!selectedStudent) { toast('Select a student first'); return; }
+  selectedFellow = id;
+  document.querySelectorAll('#assign-fellows-list .assign-item').forEach(el => el.classList.remove('selected'));
+  // find the li containing this fellow
+  const fel = document.getElementById('fellow-item-'+id)?.closest('.assign-item');
+  if (fel) fel.classList.add('selected');
+  const studentName = document.getElementById('assign-student-name').textContent;
+  document.getElementById('assign-bar-text').innerHTML = `Assign <strong>${escHtml(studentName)}</strong> → <strong>${escHtml(name)}</strong>?`;
+  document.getElementById('assign-confirm-btn').style.display = 'inline-block';
+}
+
+function clearAssign() {
+  selectedStudent = null; selectedFellow = null;
+  document.querySelectorAll('.assign-item').forEach(el => el.classList.remove('selected'));
+  document.getElementById('assign-bar').classList.remove('visible');
+  document.getElementById('assign-confirm-btn').style.display = 'none';
+}
+
+async function confirmAssign() {
+  if (!selectedStudent || !selectedFellow) return;
+  const btn = document.getElementById('assign-confirm-btn');
+  btn.textContent = 'Assigning...'; btn.disabled = true;
+
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/assignments`, {
+    method: 'POST',
+    headers: Object.assign(headers(), { 'Prefer': 'return=minimal' }),
+    body: JSON.stringify({ student_id: selectedStudent, fellow_id: selectedFellow })
+  });
+
+  if (res.ok || res.status === 201) {
+    toast('Assignment saved!');
+    DATA.assignments = null;
+    // reload all data
+    await loadAll();
+    clearAssign();
+    renderAssign();
+    renderOverview();
+  } else {
+    const err = await res.json();
+    toast('Error: ' + (err.message || 'Could not assign'));
+  }
+  btn.textContent = 'Confirm assignment'; btn.disabled = false;
+}
+
+// ----- MESSAGES -----
+function renderMessages() {
+  document.getElementById('messages-count').textContent = DATA.messages.length;
+  if (DATA.messages.length === 0) {
+    document.getElementById('messages-table').innerHTML = '<div class="empty">No messages yet</div>';
+    return;
+  }
+  document.getElementById('messages-table').innerHTML = `
+    <table>
+      <thead><tr><th>Message</th><th>From</th><th>Assignment</th><th>Time</th></tr></thead>
+      <tbody>
+        ${DATA.messages.map(m => `
+          <tr>
+            <td><div class="msg-bubble-preview">${escHtml(m.content||'')}</div></td>
+            <td><span class="badge ${m.sender_role==='fellow'?'badge-blue':'badge-green'}">${m.sender_role||'—'}</span></td>
+            <td style="color:var(--text-muted);font-size:0.8rem">${m.assignment_id||'—'}</td>
+            <td style="color:var(--text-muted);font-size:0.8rem">${timeAgo(m.created_at)}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+// ----- WAITLIST -----
+function renderWaitlist() {
+  document.getElementById('waitlist-count').textContent = DATA.waitlist.length;
+  if (DATA.waitlist.length === 0) {
+    document.getElementById('waitlist-table').innerHTML = '<div class="empty">No waitlist entries yet</div>';
+    return;
+  }
+  document.getElementById('waitlist-table').innerHTML = `
+    <table>
+      <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Grade</th><th>City</th><th>Date</th></tr></thead>
+      <tbody>
+        ${DATA.waitlist.map(w => `
+          <tr>
+            <td><strong>${escHtml(w.name||'—')}</strong></td>
+            <td style="color:var(--text-muted);font-size:0.82rem">${escHtml(w.email||'—')}</td>
+            <td style="color:var(--text-muted);font-size:0.82rem">${escHtml(w.phone||'—')}</td>
+            <td>${w.grade ? `<span class="badge badge-orange">${escHtml(w.grade)}</span>` : '—'}</td>
+            <td>${escHtml(w.city||'—')}</td>
+            <td style="color:var(--text-muted);font-size:0.8rem">${timeAgo(w.created_at)}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+// ----- SECTION LOADER -----
+const rendered = new Set();
+async function loadSection(id) {
+  if (id === 'overview') { await ensureData(); renderOverview(); return; }
+  if (rendered.has(id)) return;
+  await ensureData();
+  if (id === 'students') renderStudents();
+  else if (id === 'fellows') renderFellows();
+  else if (id === 'assign') renderAssign();
+  else if (id === 'messages') renderMessages();
+  else if (id === 'waitlist') renderWaitlist();
+  rendered.add(id);
+}
+
+let dataLoading = null;
+async function ensureData() {
+  if (DATA.students) return;
+  if (!dataLoading) dataLoading = loadAll();
+  await dataLoading;
+}
+
+// ----- SIGN OUT -----
+function signOut() {
+  localStorage.removeItem('heela_session');
+  window.location.href = '/login.html';
+}
+
+// ----- HELPERS -----
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escAttr(s) { return String(s).replace(/'/g,"\\'"); }
+function timeAgo(iso) {
+  if (!iso) return '—';
+  const diff = (Date.now() - new Date(iso)) / 1000;
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+  return Math.floor(diff/86400) + 'd ago';
+}
+
+// ----- INIT -----
+(async () => {
+  await ensureData();
+  renderOverview();
+})();
+</script>
+</body>
+</html>

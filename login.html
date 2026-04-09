@@ -78,7 +78,7 @@ if (_existingSession) {
   try {
     const _s = JSON.parse(_existingSession);
     const _role = _s.user && _s.user.user_metadata && _s.user.user_metadata.role;
-    window.location.href = _role === 'fellow' ? '/fellow-dashboard.html' : '/dashboard.html';
+    window.location.href = _role === 'admin' ? '/admin.html' : _role === 'fellow' ? '/fellow-dashboard.html' : '/dashboard.html';
   } catch(e) {
     window.location.href = '/dashboard.html';
   }
@@ -118,7 +118,7 @@ async function handleLogin() {
 
   localStorage.setItem('heela_session', JSON.stringify(data));
   const role = data.user && data.user.user_metadata && data.user.user_metadata.role;
-  window.location.href = role === 'fellow' ? '/fellow-dashboard.html' : '/dashboard.html';
+  window.location.href = role === 'admin' ? '/admin.html' : role === 'fellow' ? '/fellow-dashboard.html' : '/dashboard.html';
 }
 </script>
 </body>
