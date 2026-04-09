@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fellow Dashboard — Heela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --green-900: #1B3D2F; --green-800: #234E3B; --green-700: #2B5A45;
+  --green-600: #366B53; --green-500: #3E7A5E; --green-400: #5A9A7A;
+  --green-300: #7BAF96; --green-200: #A8CDB8; --green-100: #D4E8DC; --green-50: #EBF3EE;
+  --warm-800: #4a3f36; --warm-200: #ece6dd; --warm-100: #F3EFE8; --warm-50: #F7F4EF;
+  --white: #FFFCF7; --text-primary: #1a1a1a; --text-secondary: #5a5a5a; --text-muted: #8a8a8a;
+  --sidebar-w: 240px;
+}
+body { font-family: 'Outfit', sans-serif; background: var(--warm-50); color: var(--text-primary); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+/* SIDEBAR */
+.sidebar { width: var(--sidebar-w); background: var(--green-900); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 50; padding: 1.5rem 1rem; }
+.sidebar-logo { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--green-100); text-decoration: none; padding: 0.5rem 0.75rem; margin-bottom: 0.5rem; display: block; }
+.sidebar-logo span { font-size: 0.75rem; font-family: 'Outfit', sans-serif; display: block; color: var(--green-400); letter-spacing: 0.05em; font-weight: 400; margin-top: 0.1rem; }
+.fellow-badge { margin: 0 0.75rem 1.5rem; padding: 0.4rem 0.75rem; background: rgba(255,255,255,0.08); border-radius: 8px; font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+.nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 10px; text-decoration: none; color: rgba(255,255,255,0.6); font-size: 0.9rem; transition: all 0.2s; margin-bottom: 0.25rem; }
+.nav-item:hover { background: rgba(255,255,255,0.08); color: var(--white); }
+.nav-item.active { background: rgba(255,255,255,0.12); color: var(--white); }
+.nav-item svg { flex-shrink: 0; opacity: 0.7; }
+.nav-item.active svg { opacity: 1; }
+.sidebar-bottom { margin-top: auto; }
+.sign-out { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 10px; color: rgba(255,255,255,0.4); font-size: 0.85rem; cursor: pointer; transition: all 0.2s; background: none; border: none; font-family: 'Outfit', sans-serif; width: 100%; }
+.sign-out:hover { color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.06); }
+
+/* MAIN */
+.main { margin-left: var(--sidebar-w); padding: 2.5rem; }
+.page-header { margin-bottom: 2rem; }
+.greeting { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--green-900); margin-bottom: 0.25rem; }
+.greeting-sub { font-size: 0.95rem; color: var(--text-muted); }
+
+/* STUDENTS GRID */
+.students-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
+
+.student-card {
+  background: var(--white); border-radius: 20px;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 1.75rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none; color: inherit;
+  display: block;
+  position: relative;
+}
+.student-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+
+/* AVATAR */
+.avatar-wrap { position: relative; width: 72px; height: 72px; margin: 0 auto 1.25rem; }
+.avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--green-200); display: flex; align-items: center;
+  justify-content: center; font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem; color: var(--green-800);
+  overflow: hidden; border: 3px solid var(--white);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.unread-badge {
+  position: absolute; top: -2px; right: -2px;
+  min-width: 22px; height: 22px; border-radius: 100px;
+  background: #e74c3c; color: white;
+  font-size: 0.7rem; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--white); padding: 0 4px;
+  display: none;
+}
+.unread-badge.visible { display: flex; }
+
+.student-name { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: var(--green-900); text-align: center; margin-bottom: 0.25rem; }
+.student-meta { font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 1.25rem; }
+
+/* PROGRESS */
+.progress-wrap { margin-bottom: 1rem; }
+.progress-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+.phase-tag { font-size: 0.75rem; font-weight: 500; color: var(--green-700); background: var(--green-50); padding: 0.2rem 0.6rem; border-radius: 100px; }
+.week-tag { font-size: 0.75rem; color: var(--text-muted); }
+.progress-bar { height: 6px; background: var(--warm-100); border-radius: 100px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--green-500); border-radius: 100px; transition: width 0.6s ease; }
+
+/* CARD FOOTER */
+.card-actions { display: flex; gap: 0.5rem; }
+.card-btn { flex: 1; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem; font-weight: 500; text-align: center; cursor: pointer; transition: all 0.2s; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.3rem; border: none; font-family: 'Outfit', sans-serif; }
+.card-btn.primary { background: var(--green-800); color: var(--white); }
+.card-btn.primary:hover { background: var(--green-700); }
+.card-btn.secondary { background: var(--warm-50); color: var(--text-secondary); border: 1px solid rgba(0,0,0,0.08); }
+.card-btn.secondary:hover { background: var(--warm-100); }
+
+/* EMPTY */
+.empty-state { text-align: center; padding: 4rem 2rem; }
+.empty-icon { width: 80px; height: 80px; background: var(--green-50); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
+.empty-state h3 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--green-900); margin-bottom: 0.5rem; }
+.empty-state p { font-size: 0.9rem; color: var(--text-muted); max-width: 320px; margin: 0 auto; line-height: 1.6; }
+
+/* LOADING */
+.loading { display: flex; align-items: center; justify-content: center; min-height: 60vh; }
+.spinner { width: 32px; height: 32px; border: 3px solid var(--green-100); border-top-color: var(--green-600); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: 1.25rem; padding-bottom: 5rem; }
+  .mobile-nav { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: var(--green-900); z-index: 50; padding: 0.75rem 0 calc(0.75rem + env(safe-area-inset-bottom)); border-top: 1px solid rgba(255,255,255,0.08); }
+  .mobile-nav a { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.65rem; }
+  .mobile-nav a.active { color: var(--white); }
+}
+@media (min-width: 769px) { .mobile-nav { display: none; } }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <a href="/" class="sidebar-logo">Heela <span>Fellow Portal</span></a>
+  <div class="fellow-badge" id="fellow-name-badge">Fellow</div>
+  <a href="/fellow-dashboard.html" class="nav-item active">
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M2 20c0-3.3 3.1-6 7-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="15" r="4" stroke="currentColor" stroke-width="1.8"/></svg>
+    My Students
+  </a>
+  <a href="/fellow-profile.html" class="nav-item">
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    My Profile
+  </a>
+  <div class="sidebar-bottom">
+    <button class="sign-out" onclick="signOut()">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Sign out
+    </button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="loading" id="loading"><div class="spinner"></div></div>
+  <div id="content" style="display:none;">
+    <div class="page-header">
+      <h1 class="greeting" id="greeting">My Students</h1>
+      <p class="greeting-sub" id="greeting-sub">Your assigned students this cohort.</p>
+    </div>
+    <div class="students-grid" id="students-grid"></div>
+  </div>
+</main>
+
+<nav class="mobile-nav">
+  <a href="/fellow-dashboard.html" class="active">
+    <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M2 20c0-3.3 3.1-6 7-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="15" r="4" stroke="currentColor" stroke-width="1.8"/></svg>
+    Students
+  </a>
+  <a href="/fellow-profile.html">
+    <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    Profile
+  </a>
+</nav>
+
+<script>
+const SUPABASE_URL = 'https://ffoarsbuqrlbpkvaxvha.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_l7lnXsEMcrB0whXR6GCbIw_M4bwwCpe';
+const PHASES = ['Foundation','Build','Sustain','Land'];
+
+function getSession() { const s = localStorage.getItem('heela_session'); return s ? JSON.parse(s) : null; }
+function signOut() { localStorage.removeItem('heela_session'); window.location.href = '/login.html'; }
+function authHeaders(t) { return { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${t}`, 'Content-Type': 'application/json' }; }
+
+function getPhase(week) {
+  if (week <= 6) return 0;
+  if (week <= 18) return 1;
+  if (week <= 30) return 2;
+  return 3;
+}
+
+function avatarColors(name) {
+  const colors = ['#A8CDB8','#D4E8DC','#c4b8ab','#ddd4ca','#7BAF96','#ece6dd'];
+  const i = (name.charCodeAt(0) + (name.charCodeAt(1) || 0)) % colors.length;
+  return colors[i];
+}
+
+async function loadDashboard() {
+  const session = getSession();
+  if (!session) { window.location.href = '/login.html'; return; }
+  const token = session.access_token;
+  const userId = session.user.id;
+
+  // Get fellow profile
+  const fRes = await fetch(`${SUPABASE_URL}/rest/v1/fellows?auth_id=eq.${userId}&limit=1`, { headers: authHeaders(token) });
+  const fellows = await fRes.json();
+  const fellow = fellows[0];
+
+  if (!fellow) { window.location.href = '/login.html'; return; }
+
+  document.getElementById('fellow-name-badge').textContent = `${fellow.first_name} ${fellow.last_name}`;
+  document.getElementById('greeting').textContent = `Hey, ${fellow.first_name}.`;
+  document.getElementById('greeting-sub').textContent = `Here are your assigned students.`;
+
+  // Get assignments
+  const aRes = await fetch(`${SUPABASE_URL}/rest/v1/assignments?fellow_id=eq.${fellow.id}&status=eq.active`, { headers: authHeaders(token) });
+  const assignments = await aRes.json();
+
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+
+  if (!assignments.length) {
+    document.getElementById('students-grid').innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1;">
+        <div class="empty-icon"><svg width="32" height="32" fill="none" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4" stroke="#3E7A5E" stroke-width="1.8"/><path d="M2 20c0-3.3 3.1-6 7-6" stroke="#3E7A5E" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="15" r="4" stroke="#3E7A5E" stroke-width="1.8"/></svg></div>
+        <h3>No students yet</h3>
+        <p>You haven't been assigned any students yet. The Heela team will match you soon.</p>
+      </div>`;
+    return;
+  }
+
+  // Load each student
+  const grid = document.getElementById('students-grid');
+  grid.innerHTML = '';
+
+  for (const assignment of assignments) {
+    const sRes = await fetch(`${SUPABASE_URL}/rest/v1/students?id=eq.${assignment.student_id}&limit=1`, { headers: authHeaders(token) });
+    const students = await sRes.json();
+    const student = students[0];
+    if (!student) continue;
+
+    // Count unread messages from student
+    const mRes = await fetch(`${SUPABASE_URL}/rest/v1/messages?assignment_id=eq.${assignment.id}&sender_role=eq.student&read_by_fellow=eq.false`, { headers: authHeaders(token) });
+    const unread = await mRes.json();
+    const unreadCount = unread.length;
+
+    const week = student.current_week || 1;
+    const phaseIdx = getPhase(week);
+    const pct = Math.round((week / 40) * 100);
+    const initials = student.first_name[0] + student.last_name[0];
+    const bg = avatarColors(student.first_name);
+
+    const card = document.createElement('a');
+    card.href = `/fellow-student.html?assignment=${assignment.id}`;
+    card.className = 'student-card';
+    card.innerHTML = `
+      <div class="avatar-wrap">
+        <div class="avatar" style="background:${bg};">
+          ${student.avatar_url ? `<img src="${student.avatar_url}" alt="${student.first_name}">` : initials.toUpperCase()}
+        </div>
+        <div class="unread-badge ${unreadCount > 0 ? 'visible' : ''}">${unreadCount > 9 ? '9+' : unreadCount}</div>
+      </div>
+      <div class="student-name">${student.first_name} ${student.last_name}</div>
+      <div class="student-meta">Grade ${student.grade || '—'} · ${student.city_state || 'Location unknown'}</div>
+      <div class="progress-wrap">
+        <div class="progress-top">
+          <span class="phase-tag">${PHASES[phaseIdx]}</span>
+          <span class="week-tag">Week ${week}/40</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="card-actions">
+        <span class="card-btn primary">View profile</span>
+        <span class="card-btn secondary">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 012 2v10a2 2 0 01-2 2H7l-4 3V6a2 2 0 012-2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          ${unreadCount > 0 ? `${unreadCount} new` : 'Message'}
+        </span>
+      </div>
+    `;
+    grid.appendChild(card);
+  }
+}
+
+loadDashboard();
+</script>
+</body>
+</html>
