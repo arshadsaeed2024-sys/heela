@@ -171,6 +171,34 @@ tr:hover td { background: rgba(0,0,0,0.015); }
 }
 .toast.show { opacity: 1; }
 
+/* APPLICATION STATUS BADGES */
+.badge { display: inline-block; padding: 0.2rem 0.65rem; border-radius: 100px; font-size: 0.75rem; font-weight: 500; }
+.badge-pending { background: #fff3cd; color: #856404; }
+.badge-approved { background: var(--green-50); color: var(--green-700); }
+.badge-rejected { background: #fce8e6; color: #c0392b; }
+.badge-account_created { background: #e8f4fd; color: #2471a3; }
+
+/* APPROVE/REJECT BUTTONS */
+.app-actions { display: flex; gap: 0.5rem; align-items: center; }
+.btn-approve { padding: 0.35rem 0.9rem; background: var(--green-700); color: white; border: none; border-radius: 100px; font-size: 0.8rem; font-weight: 500; cursor: pointer; font-family: 'Outfit', sans-serif; }
+.btn-approve:hover { background: var(--green-800); }
+.btn-reject { padding: 0.35rem 0.9rem; background: transparent; color: #c0392b; border: 1px solid #c0392b; border-radius: 100px; font-size: 0.8rem; font-weight: 500; cursor: pointer; font-family: 'Outfit', sans-serif; }
+.btn-reject:hover { background: #fce8e6; }
+
+/* APPROVE MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; }
+.modal-overlay.show { display: flex; }
+.modal { background: var(--white); border-radius: 16px; padding: 2rem; width: 100%; max-width: 420px; box-shadow: 0 8px 40px rgba(0,0,0,0.15); }
+.modal h3 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--green-900); margin-bottom: 0.5rem; }
+.modal p { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem; }
+.modal input { width: 100%; padding: 0.75rem 1rem; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); background: var(--warm-50); font-family: 'Outfit', sans-serif; font-size: 0.9rem; outline: none; margin-bottom: 1rem; }
+.modal input:focus { border-color: var(--green-500); }
+.modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; }
+.modal-cancel { padding: 0.6rem 1.25rem; background: transparent; border: 1px solid rgba(0,0,0,0.15); border-radius: 100px; font-family: 'Outfit', sans-serif; font-size: 0.875rem; cursor: pointer; }
+.modal-confirm { padding: 0.6rem 1.25rem; background: var(--green-800); color: white; border: none; border-radius: 100px; font-family: 'Outfit', sans-serif; font-size: 0.875rem; cursor: pointer; }
+.modal-confirm:hover { background: var(--green-700); }
+.modal-confirm:disabled { opacity: 0.6; cursor: not-allowed; }
+
 @media (max-width: 768px) {
   .sidebar { width: 60px; min-width: 60px; }
   .sidebar-logo, .sidebar-role, .nav-item span, .signout-btn { display: none; }
@@ -213,6 +241,10 @@ tr:hover td { background: rgba(0,0,0,0.015); }
     <a class="nav-item" data-section="waitlist" onclick="showSection('waitlist',this)">
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
       <span>Waitlist</span>
+    </a>
+    <a class="nav-item" data-section="applications" onclick="showSection('applications',this)">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span>Applications</span>
     </a>
   </nav>
 
@@ -314,11 +346,32 @@ tr:hover td { background: rgba(0,0,0,0.015); }
       </div>
     </div>
 
+    <!-- APPLICATIONS -->
+    <div class="section" id="section-applications">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Fellow Applications</span><span class="card-count" id="applications-count">—</span></div>
+        <div id="applications-table"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
   </div><!-- /content -->
 </div><!-- /main -->
 </div><!-- /layout -->
 
 <div class="toast" id="toast"></div>
+
+<!-- APPROVE MODAL -->
+<div class="modal-overlay" id="approve-modal">
+  <div class="modal">
+    <h3>Approve application</h3>
+    <p>Enter the heela.org email address for this Fellow. They'll receive an invite link to create their account.</p>
+    <input type="email" id="heela-email-input" placeholder="name@heela.org">
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeApproveModal()">Cancel</button>
+      <button class="modal-confirm" id="modal-confirm-btn" onclick="confirmApprove()">Send invite</button>
+    </div>
+  </div>
+</div>
 
 <script>
 const SUPABASE_URL = 'https://ffoarsbuqrlbpkvaxvha.supabase.co';
@@ -366,7 +419,7 @@ function toast(msg) {
 }
 
 // ----- NAV -----
-const TITLES = { overview:'Overview', students:'Students', fellows:'Fellows', assign:'Assign Fellows', messages:'Messages', waitlist:'Waitlist' };
+const TITLES = { overview:'Overview', students:'Students', fellows:'Fellows', assign:'Assign Fellows', messages:'Messages', waitlist:'Waitlist', applications:'Fellow Applications' };
 function showSection(id, el) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -676,6 +729,7 @@ async function loadSection(id) {
   else if (id === 'assign') renderAssign();
   else if (id === 'messages') renderMessages();
   else if (id === 'waitlist') renderWaitlist();
+  else if (id === 'applications') await renderApplications();
   rendered.add(id);
 }
 
@@ -684,6 +738,136 @@ async function ensureData() {
   if (DATA.students) return;
   if (!dataLoading) dataLoading = loadAll();
   await dataLoading;
+}
+
+// ----- APPLICATIONS -----
+let pendingApprovalId = null;
+
+async function renderApplications() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/fellow_applications?select=*&order=created_at.desc`, { headers: headers() });
+  const apps = await res.json();
+  document.getElementById('applications-count').textContent = apps.filter(a => a.status === 'pending').length + ' pending';
+  if (!apps || apps.length === 0) {
+    document.getElementById('applications-table').innerHTML = '<div class="empty">No applications yet</div>';
+    return;
+  }
+  document.getElementById('applications-table').innerHTML = `
+    <table>
+      <thead><tr><th>Name</th><th>Email</th><th>University</th><th>Bio</th><th>Applied</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        ${apps.map(a => `
+          <tr>
+            <td><strong>${escHtml((a.first_name||'')+' '+(a.last_name||''))}</strong></td>
+            <td style="color:var(--text-muted);font-size:0.82rem">${escHtml(a.email||'—')}</td>
+            <td style="font-size:0.82rem">${escHtml(a.university||'—')}${a.year ? ' · '+escHtml(a.year) : ''}</td>
+            <td class="truncate">${escHtml(a.bio||'—')}</td>
+            <td style="color:var(--text-muted);font-size:0.8rem">${timeAgo(a.created_at)}</td>
+            <td><span class="badge badge-${escHtml(a.status||'pending')}">${escHtml(a.status||'pending')}</span></td>
+            <td>
+              <div class="app-actions">
+                ${a.status === 'pending' ? `
+                  <button class="btn-approve" onclick="openApproveModal('${escAttr(a.id)}')">Approve</button>
+                  <button class="btn-reject" onclick="rejectApplication('${escAttr(a.id)}')">Reject</button>
+                ` : a.status === 'approved' ? `
+                  <button class="btn-approve" onclick="resendInvite('${escAttr(a.id)}')">Resend invite</button>
+                ` : '—'}
+              </div>
+            </td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function openApproveModal(id) {
+  pendingApprovalId = id;
+  document.getElementById('heela-email-input').value = '';
+  document.getElementById('approve-modal').classList.add('show');
+}
+
+function closeApproveModal() {
+  document.getElementById('approve-modal').classList.remove('show');
+  pendingApprovalId = null;
+}
+
+async function confirmApprove() {
+  const heelaEmail = document.getElementById('heela-email-input').value.trim();
+  if (!heelaEmail || !heelaEmail.includes('@')) return toast('Enter a valid heela.org email.');
+
+  const btn = document.getElementById('modal-confirm-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  const token = crypto.randomUUID();
+
+  // Update application with heela email, token, approved status
+  await fetch(`${SUPABASE_URL}/rest/v1/fellow_applications?id=eq.${pendingApprovalId}`, {
+    method: 'PATCH',
+    headers: { ...headers(), 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ status: 'approved', heela_email: heelaEmail, invite_token: token, invite_sent_at: new Date().toISOString() })
+  });
+
+  // Send invite email via Resend
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer re_UDn4KQgd_QKXuxvtrwLeTf8q6tQzR9i4h', 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: 'Heela <hello@heela.org>',
+      to: [heelaEmail],
+      subject: "You've been approved — create your Heela account",
+      html: `<p>Congratulations! You've been approved as a Fellow at Heela.</p>
+             <p>Click the link below to create your account using this email address (${heelaEmail}):</p>
+             <p><a href="https://heela.org/fellow-invite.html?token=${token}">Create your Heela account →</a></p>
+             <p>This link is unique to you. If you have any questions, reply to this email.</p>
+             <p>— The Heela Team</p>`
+    })
+  });
+
+  closeApproveModal();
+  rendered.delete('applications');
+  await renderApplications();
+  toast('Invite sent to ' + heelaEmail);
+  btn.disabled = false;
+  btn.textContent = 'Send invite';
+}
+
+async function rejectApplication(id) {
+  if (!confirm('Reject this application?')) return;
+  await fetch(`${SUPABASE_URL}/rest/v1/fellow_applications?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { ...headers(), 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ status: 'rejected' })
+  });
+  rendered.delete('applications');
+  await renderApplications();
+  toast('Application rejected.');
+}
+
+async function resendInvite(id) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/fellow_applications?id=eq.${id}&select=*`, { headers: headers() });
+  const apps = await res.json();
+  if (!apps || !apps[0]) return;
+  const app = apps[0];
+  const token = crypto.randomUUID();
+  await fetch(`${SUPABASE_URL}/rest/v1/fellow_applications?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { ...headers(), 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ invite_token: token, invite_sent_at: new Date().toISOString() })
+  });
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer re_UDn4KQgd_QKXuxvtrwLeTf8q6tQzR9i4h', 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: 'Heela <hello@heela.org>',
+      to: [app.heela_email],
+      subject: "Your Heela invite link (resent)",
+      html: `<p>Here is your updated invite link to create your Heela Fellow account:</p>
+             <p><a href="https://heela.org/fellow-invite.html?token=${token}">Create your Heela account →</a></p>
+             <p>— The Heela Team</p>`
+    })
+  });
+  rendered.delete('applications');
+  await renderApplications();
+  toast('Invite resent to ' + app.heela_email);
 }
 
 // ----- SIGN OUT -----
@@ -703,6 +887,11 @@ function timeAgo(iso) {
   if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
   return Math.floor(diff/86400) + 'd ago';
 }
+
+// Close modal on overlay click
+document.getElementById('approve-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeApproveModal();
+});
 
 // ----- INIT -----
 (async () => {

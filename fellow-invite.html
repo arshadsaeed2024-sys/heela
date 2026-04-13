@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create your Fellow account — Heela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --green-900: #1B3D2F; --green-800: #234E3B; --green-700: #2B5A45;
+  --green-500: #3E7A5E; --green-100: #D4E8DC;
+  --warm-200: #ece6dd; --warm-800: #4a3f36; --warm-50: #F7F4EF;
+  --white: #FFFCF7; --text-primary: #1a1a1a; --text-secondary: #5a5a5a; --text-muted: #8a8a8a;
+}
+body { font-family: 'Outfit', sans-serif; background: var(--warm-50); color: var(--text-primary); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1.5rem; -webkit-font-smoothing: antialiased; }
+.card { background: var(--white); border-radius: 20px; border: 1px solid rgba(0,0,0,0.06); padding: 3rem 2.5rem; width: 100%; max-width: 480px; box-shadow: 0 4px 40px rgba(0,0,0,0.06); }
+.tag { display: inline-block; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--warm-800); margin-bottom: 1rem; padding: 0.35rem 0.9rem; background: var(--warm-200); border-radius: 100px; }
+h1 { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--green-900); margin-bottom: 0.4rem; }
+.sub { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 2rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem; }
+label { font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); }
+input { width: 100%; padding: 0.85rem 1rem; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); background: var(--warm-50); color: var(--text-primary); font-family: 'Outfit', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s, background 0.2s; }
+input:focus { border-color: var(--green-500); background: var(--white); }
+input[disabled] { opacity: 0.6; cursor: not-allowed; }
+.error-msg { display: none; font-size: 0.875rem; color: #c0392b; background: #fef0ec; border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 0.75rem; }
+.btn { width: 100%; padding: 1rem; background: var(--green-800); color: var(--white); border: none; border-radius: 100px; font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 500; cursor: pointer; transition: background 0.2s; margin-top: 0.5rem; }
+.btn:hover { background: var(--green-700); }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.success-state { text-align: center; padding: 1rem 0; }
+.success-icon { width: 64px; height: 64px; background: var(--green-100); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
+.success-title { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--green-900); margin-bottom: 0.5rem; }
+.success-sub { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 2rem; }
+.success-link { display: inline-block; padding: 0.85rem 2rem; background: var(--green-800); color: var(--white); border-radius: 100px; text-decoration: none; font-weight: 500; }
+.invalid-state { text-align: center; padding: 1rem 0; }
+.invalid-title { font-family: 'DM Serif Display', serif; font-size: 1.8rem; color: var(--green-900); margin-bottom: 0.75rem; }
+.invalid-sub { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7; }
+@media (max-width: 560px) { .card { padding: 2rem 1.5rem; } }
+</style>
+</head>
+<body>
+<div class="card" id="main-card">
+  <div style="text-align:center;padding:2rem 0;color:var(--text-muted);">Verifying your invite link...</div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://ffoarsbuqrlbpkvaxvha.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_l7lnXsEMcrB0whXR6GCbIw_M4bwwCpe';
+
+const params = new URLSearchParams(window.location.search);
+const token = params.get('token');
+let applicationData = null;
+
+async function init() {
+  if (!token) return showInvalid();
+
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/fellow_applications?invite_token=eq.${token}&status=eq.approved&select=*`, {
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+  });
+  const data = await res.json();
+
+  if (!data || data.length === 0) return showInvalid();
+
+  applicationData = data[0];
+  showForm();
+}
+
+function showForm() {
+  const app = applicationData;
+  document.getElementById('main-card').innerHTML = `
+    <div class="tag">Fellow Invite</div>
+    <h1>Create your account</h1>
+    <p class="sub">Welcome to Heela, ${app.first_name}. Set a password for your heela.org account.</p>
+    <div class="form-group">
+      <label>Your Heela email</label>
+      <input type="email" value="${app.heela_email}" disabled>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="At least 8 characters">
+    </div>
+    <div class="form-group">
+      <label for="confirm">Confirm password</label>
+      <input type="password" id="confirm" placeholder="Repeat your password">
+    </div>
+    <div class="error-msg" id="error-msg"></div>
+    <button class="btn" id="create-btn" onclick="createAccount()">Create account &rarr;</button>
+  `;
+}
+
+async function createAccount() {
+  const password = document.getElementById('password').value;
+  const confirm  = document.getElementById('confirm').value;
+  const errorEl  = document.getElementById('error-msg');
+  errorEl.style.display = 'none';
+
+  if (password.length < 8) { errorEl.textContent = 'Password must be at least 8 characters.'; errorEl.style.display = 'block'; return; }
+  if (password !== confirm) { errorEl.textContent = 'Passwords do not match.'; errorEl.style.display = 'block'; return; }
+
+  const btn = document.getElementById('create-btn');
+  btn.disabled = true;
+  btn.textContent = 'Creating account...';
+
+  try {
+    // Create Supabase auth account
+    const authRes = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
+      body: JSON.stringify({
+        email: applicationData.heela_email,
+        password,
+        options: { data: { first_name: applicationData.first_name, last_name: applicationData.last_name, role: 'fellow' } }
+      })
+    });
+
+    const authData = await authRes.json();
+    if (!authRes.ok) {
+      btn.disabled = false;
+      btn.textContent = 'Create account →';
+      errorEl.textContent = authData.msg || authData.error_description || 'Something went wrong.';
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    // Save to fellows table
+    await fetch(`${SUPABASE_URL}/rest/v1/fellows`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        auth_id: authData.user?.id || null,
+        first_name: applicationData.first_name,
+        last_name: applicationData.last_name,
+        email: applicationData.heela_email,
+        university: applicationData.university,
+        bio: applicationData.bio
+      })
+    });
+
+    // Mark invite as used
+    await fetch(`${SUPABASE_URL}/rest/v1/fellow_applications?id=eq.${applicationData.id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ status: 'account_created', invite_token: null })
+    });
+
+    document.getElementById('main-card').innerHTML = `
+      <div class="success-state">
+        <div class="success-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <path d="M5 14l6 6L23 8" stroke="#2B5A45" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="success-title">Account created.</p>
+        <p class="success-sub">Welcome to Heela, ${applicationData.first_name}. You can now sign in and access your student dashboard.</p>
+        <a href="/login.html" class="success-link">Sign in →</a>
+      </div>
+    `;
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = 'Create account →';
+    errorEl.textContent = 'Connection error. Please try again.';
+    errorEl.style.display = 'block';
+  }
+}
+
+function showInvalid() {
+  document.getElementById('main-card').innerHTML = `
+    <div class="invalid-state">
+      <p class="invalid-title">Invalid invite link.</p>
+      <p class="invalid-sub">This link is invalid, has already been used, or has expired. Please contact the Heela team at hello@heela.org.</p>
+    </div>
+  `;
+}
+
+init();
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Join as a Fellow — Heela</title>
+<title>Apply to be a Fellow — Heela</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
@@ -57,7 +57,6 @@ select { cursor: pointer; }
 
 .note { font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-top: 1rem; line-height: 1.6; }
 
-/* SUCCESS */
 .success-state { text-align: center; padding: 1rem 0; }
 .success-icon { width: 64px; height: 64px; background: var(--green-100); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
 .success-title { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--green-900); margin-bottom: 0.5rem; }
@@ -79,7 +78,7 @@ select { cursor: pointer; }
   <div class="card" id="signup-card">
     <div class="tag">For Fellows</div>
     <h1>Become a Fellow</h1>
-    <p class="sub">Already have an account? <a href="/login.html">Sign in</a></p>
+    <p class="sub">Apply to mentor refugee students through the college application process.</p>
 
     <form id="signup-form" autocomplete="on">
       <div class="form-row">
@@ -121,19 +120,11 @@ select { cursor: pointer; }
         <label for="bio">Why do you want to be a Fellow? <span style="color:var(--text-muted);font-weight:400;">(2–3 sentences)</span></label>
         <textarea id="bio" rows="3" placeholder="Tell us a bit about yourself and why this matters to you..." required></textarea>
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="At least 8 characters" autocomplete="new-password" required>
-      </div>
-      <div class="form-group">
-        <label for="confirm-password">Confirm password</label>
-        <input type="password" id="confirm-password" placeholder="Repeat your password" autocomplete="new-password" required>
-      </div>
 
       <div class="error-msg" id="error-msg"></div>
 
-      <button type="button" class="btn" id="signup-btn" onclick="handleSignup()">Submit application &rarr;</button>
-      <p class="note">Fellow applications are reviewed by the Heela team before approval. We'll be in touch within a few days.</p>
+      <button type="button" class="btn" id="signup-btn" onclick="handleApply()">Submit application &rarr;</button>
+      <p class="note">Applications are reviewed by the Heela team. If selected, you'll receive an email to create your account.</p>
     </form>
   </div>
 </main>
@@ -142,50 +133,27 @@ select { cursor: pointer; }
 const SUPABASE_URL = 'https://ffoarsbuqrlbpkvaxvha.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_l7lnXsEMcrB0whXR6GCbIw_M4bwwCpe';
 
-async function handleSignup() {
-  const firstName = document.getElementById('first-name').value.trim();
-  const lastName  = document.getElementById('last-name').value.trim();
-  const email     = document.getElementById('email').value.trim();
-  const university= document.getElementById('university').value.trim();
-  const year      = document.getElementById('year').value;
-  const major     = document.getElementById('major').value.trim();
-  const bio       = document.getElementById('bio').value.trim();
-  const password  = document.getElementById('password').value;
-  const confirm   = document.getElementById('confirm-password').value;
+async function handleApply() {
+  const firstName  = document.getElementById('first-name').value.trim();
+  const lastName   = document.getElementById('last-name').value.trim();
+  const email      = document.getElementById('email').value.trim();
+  const university = document.getElementById('university').value.trim();
+  const year       = document.getElementById('year').value;
+  const major      = document.getElementById('major').value.trim();
+  const bio        = document.getElementById('bio').value.trim();
 
   hideError();
 
-  if (!firstName || !lastName || !email || !university || !year || !bio || !password) {
+  if (!firstName || !lastName || !email || !university || !year || !bio) {
     return showError('Please fill in all required fields.');
   }
-  if (password.length < 8) return showError('Password must be at least 8 characters.');
-  if (password !== confirm) return showError('Passwords do not match.');
 
   const btn = document.getElementById('signup-btn');
   btn.disabled = true;
   btn.textContent = 'Submitting...';
 
   try {
-    // Create Supabase Auth user
-    const authRes = await fetch(`${SUPABASE_URL}/auth/v1/signup?redirect_to=https://heela.org/login.html`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
-      body: JSON.stringify({
-        email, password,
-        options: { data: { first_name: firstName, last_name: lastName, role: 'fellow' } }
-      })
-    });
-
-    const authData = await authRes.json();
-
-    if (!authRes.ok) {
-      btn.disabled = false;
-      btn.textContent = 'Submit application →';
-      return showError(authData.msg || authData.error_description || 'Something went wrong. Please try again.');
-    }
-
-    // Save to fellows table
-    await fetch(`${SUPABASE_URL}/rest/v1/fellows`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/fellow_applications`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -193,17 +161,16 @@ async function handleSignup() {
         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
         'Prefer': 'return=minimal'
       },
-      body: JSON.stringify({
-        auth_id: authData.user?.id || null,
-        first_name: firstName,
-        last_name: lastName,
-        email: email,
-        university: `${university}${major ? ' · ' + major : ''}${year ? ' (' + year + ')' : ''}`,
-        bio: bio
-      })
+      body: JSON.stringify({ first_name: firstName, last_name: lastName, email, university, year, major, bio })
     });
 
-    // Show success
+    if (!res.ok) {
+      const err = await res.json();
+      btn.disabled = false;
+      btn.textContent = 'Submit application →';
+      return showError(err.message || 'Something went wrong. Please try again.');
+    }
+
     document.getElementById('signup-card').innerHTML = `
       <div class="success-state">
         <div class="success-icon">
@@ -212,7 +179,7 @@ async function handleSignup() {
           </svg>
         </div>
         <p class="success-title">Application received.</p>
-        <p class="success-sub">Thank you, ${firstName}. The Heela team will review your application and reach out within a few days. Check your email to confirm your account.</p>
+        <p class="success-sub">Thank you, ${firstName}. The Heela team will review your application and reach out within a few days.</p>
         <a href="/" class="success-link">← Back to Heela</a>
       </div>
     `;
