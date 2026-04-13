@@ -854,7 +854,22 @@ async function resendInvite(id) {
   });
   rendered.delete('applications');
   await renderApplications();
-  prompt(`Copy this invite link and send to ${app.heela_email}:`, inviteUrl);
+  showInviteModal(app.heela_email, inviteUrl);
+}
+
+function showInviteModal(email, inviteUrl) {
+  const modal = document.getElementById('approve-modal');
+  modal.innerHTML = `
+    <div class="modal">
+      <h3>Invite link ready</h3>
+      <p>Copy this link and send it to <strong>${escHtml(email)}</strong> from your hello@heela.org email:</p>
+      <input type="text" value="${escHtml(inviteUrl)}" id="invite-url-field" readonly style="font-size:0.8rem;color:var(--text-muted)">
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="copyInviteLink()">Copy link</button>
+        <button class="modal-confirm" onclick="document.getElementById('approve-modal').classList.remove('show')">Done</button>
+      </div>
+    </div>`;
+  modal.classList.add('show');
 }
 
 function copyInviteLink() {
