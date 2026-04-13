@@ -883,7 +883,7 @@ footer {
     <a href="#support">Get involved</a>
     <a href="#donate" class="nav-donate">Donate</a>
   </div>
-  <button class="mobile-menu-btn" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('show')">
+  <button class="mobile-menu-btn" id="menuBtn" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
@@ -1298,6 +1298,16 @@ function handleWaitlist() {
   if (!valid) return;
   form.innerHTML = '<div style="text-align: center; padding: 2rem 0;"><p style="font-family: DM Serif Display, serif; font-size: 1.5rem; color: #1B3D2F; margin-bottom: 0.5rem;">You\'re on the list.</p><p style="font-size: 0.95rem; color: #5a5a5a;">We\'ll be in touch when applications open. Thank you for your interest in Heela.</p></div>';
 }
+</script>
+<script>
+  document.getElementById('menuBtn').addEventListener('click', function() {
+    document.querySelector('.nav-links').classList.toggle('show');
+  });
+  document.querySelectorAll('.nav-links a').forEach(function(link) {
+    link.addEventListener('click', function() {
+      document.querySelector('.nav-links').classList.remove('show');
+    });
+  });
 </script>
 
 </body>

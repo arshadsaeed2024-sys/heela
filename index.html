@@ -895,7 +895,7 @@ footer {
     <a href="/signup.html" class="nav-signup">Sign Up</a>
     <a href="#donate" class="nav-donate">Donate</a>
   </div>
-  <button class="mobile-menu-btn" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('show')">
+  <button class="mobile-menu-btn" id="menuBtn" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
@@ -1353,5 +1353,15 @@ function sendThankYouEmail(email, firstName) {
 </script>
 
 <script async src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  document.getElementById('menuBtn').addEventListener('click', function() {
+    document.querySelector('.nav-links').classList.toggle('show');
+  });
+  document.querySelectorAll('.nav-links a').forEach(function(link) {
+    link.addEventListener('click', function() {
+      document.querySelector('.nav-links').classList.remove('show');
+    });
+  });
+</script>
 </body>
 </html>
