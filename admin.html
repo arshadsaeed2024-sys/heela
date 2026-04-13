@@ -795,39 +795,37 @@ async function confirmApprove() {
 
   const btn = document.getElementById('modal-confirm-btn');
   btn.disabled = true;
-  btn.textContent = 'Sending...';
+  btn.textContent = 'Saving...';
 
   const token = crypto.randomUUID();
+  const inviteUrl = `https://heela.org/fellow-invite.html?token=${token}`;
 
-  // Update application with heela email, token, approved status
+  // Save token + approved status to DB
   await fetch(`${SUPABASE_URL}/rest/v1/fellow_applications?id=eq.${pendingApprovalId}`, {
     method: 'PATCH',
     headers: { ...headers(), 'Prefer': 'return=minimal' },
     body: JSON.stringify({ status: 'approved', heela_email: heelaEmail, invite_token: token, invite_sent_at: new Date().toISOString() })
   });
 
-  // Send invite email via Resend
-  await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer re_UDn4KQgd_QKXuxvtrwLeTf8q6tQzR9i4h', 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      from: 'Heela <hello@heela.org>',
-      to: [heelaEmail],
-      subject: "You've been approved — create your Heela account",
-      html: `<p>Congratulations! You've been approved as a Fellow at Heela.</p>
-             <p>Click the link below to create your account using this email address (${heelaEmail}):</p>
-             <p><a href="https://heela.org/fellow-invite.html?token=${token}">Create your Heela account →</a></p>
-             <p>This link is unique to you. If you have any questions, reply to this email.</p>
-             <p>— The Heela Team</p>`
-    })
-  });
-
   closeApproveModal();
   rendered.delete('applications');
   await renderApplications();
-  toast('Invite sent to ' + heelaEmail);
   btn.disabled = false;
   btn.textContent = 'Send invite';
+
+  // Show invite link for manual sending
+  const modal = document.getElementById('approve-modal');
+  modal.innerHTML = `
+    <div class="modal">
+      <h3>Application approved</h3>
+      <p>Copy this invite link and send it to <strong>${escHtml(heelaEmail)}</strong> from your heela.org email:</p>
+      <input type="text" value="${escHtml(inviteUrl)}" id="invite-url-field" readonly style="font-size:0.8rem;color:var(--text-muted)">
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="copyInviteLink()">Copy link</button>
+        <button class="modal-confirm" onclick="document.getElementById('approve-modal').classList.remove('show');location.reload()">Done</button>
+      </div>
+    </div>`;
+  modal.classList.add('show');
 }
 
 async function rejectApplication(id) {
@@ -848,26 +846,20 @@ async function resendInvite(id) {
   if (!apps || !apps[0]) return;
   const app = apps[0];
   const token = crypto.randomUUID();
+  const inviteUrl = `https://heela.org/fellow-invite.html?token=${token}`;
   await fetch(`${SUPABASE_URL}/rest/v1/fellow_applications?id=eq.${id}`, {
     method: 'PATCH',
     headers: { ...headers(), 'Prefer': 'return=minimal' },
     body: JSON.stringify({ invite_token: token, invite_sent_at: new Date().toISOString() })
   });
-  await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer re_UDn4KQgd_QKXuxvtrwLeTf8q6tQzR9i4h', 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      from: 'Heela <hello@heela.org>',
-      to: [app.heela_email],
-      subject: "Your Heela invite link (resent)",
-      html: `<p>Here is your updated invite link to create your Heela Fellow account:</p>
-             <p><a href="https://heela.org/fellow-invite.html?token=${token}">Create your Heela account →</a></p>
-             <p>— The Heela Team</p>`
-    })
-  });
   rendered.delete('applications');
   await renderApplications();
-  toast('Invite resent to ' + app.heela_email);
+  prompt(`Copy this invite link and send to ${app.heela_email}:`, inviteUrl);
+}
+
+function copyInviteLink() {
+  const field = document.getElementById('invite-url-field');
+  if (field) { field.select(); document.execCommand('copy'); toast('Link copied!'); }
 }
 
 // ----- SIGN OUT -----
