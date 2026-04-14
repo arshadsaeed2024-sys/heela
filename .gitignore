@@ -4,3 +4,5 @@
 !.env.example
 .netlify/
 node_modules/
+.vercel
+supabase/.temp/
