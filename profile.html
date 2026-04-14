@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile — Heela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --green-900: #1B3D2F; --green-800: #234E3B; --green-700: #2B5A45;
+  --green-600: #366B53; --green-500: #3E7A5E; --green-400: #5A9A7A;
+  --green-300: #7BAF96; --green-200: #A8CDB8; --green-100: #D4E8DC; --green-50: #EBF3EE;
+  --warm-800: #4a3f36; --warm-200: #ece6dd; --warm-100: #F3EFE8; --warm-50: #F7F4EF;
+  --white: #FFFCF7; --text-primary: #1a1a1a; --text-secondary: #5a5a5a; --text-muted: #8a8a8a;
+  --sidebar-w: 240px;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Outfit', sans-serif; background: var(--warm-50); color: var(--text-primary); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+.app { display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w); background: var(--green-900);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 50; padding: 1.5rem 1rem;
+}
+.sidebar-logo { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--green-100); text-decoration: none; padding: 0.5rem 0.75rem; margin-bottom: 2rem; display: block; }
+.sidebar-logo span { font-size: 0.75rem; font-family: 'Outfit', sans-serif; display: block; color: var(--green-400); letter-spacing: 0.05em; font-weight: 400; margin-top: 0.1rem; }
+.nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 10px; text-decoration: none; color: rgba(255,255,255,0.6); font-size: 0.9rem; font-weight: 400; transition: all 0.2s; margin-bottom: 0.25rem; }
+.nav-item:hover { background: rgba(255,255,255,0.08); color: var(--white); }
+.nav-item.active { background: rgba(255,255,255,0.12); color: var(--white); }
+.nav-item svg { flex-shrink: 0; opacity: 0.7; }
+.nav-item.active svg, .nav-item:hover svg { opacity: 1; }
+.sidebar-bottom { margin-top: auto; }
+.sign-out { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 10px; color: rgba(255,255,255,0.4); font-size: 0.85rem; cursor: pointer; transition: all 0.2s; background: none; border: none; font-family: 'Outfit', sans-serif; width: 100%; }
+.sign-out:hover { color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.06); }
+
+/* MAIN */
+.main { margin-left: var(--sidebar-w); flex: 1; padding: 2.5rem; max-width: 700px; }
+
+.page-header { margin-bottom: 2rem; }
+.page-title { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--green-900); margin-bottom: 0.25rem; }
+.page-sub { font-size: 0.95rem; color: var(--text-muted); }
+
+/* AVATAR */
+.avatar-section { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; }
+.avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--green-200); display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: var(--green-800); flex-shrink: 0; overflow: hidden; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-info { }
+.avatar-name { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--green-900); }
+.avatar-email { font-size: 0.875rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+/* CARD */
+.card { background: var(--white); border-radius: 16px; border: 1px solid rgba(0,0,0,0.06); padding: 2rem; margin-bottom: 1.25rem; }
+.card-title { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.25rem; }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.field-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+.field-group:last-child { margin-bottom: 0; }
+label { font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); }
+input, select {
+  width: 100%; padding: 0.85rem 1rem; border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.1); background: var(--warm-50);
+  color: var(--text-primary); font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem; outline: none; transition: border-color 0.2s, background 0.2s;
+  -webkit-appearance: none;
+}
+input:focus, select:focus { border-color: var(--green-500); background: var(--white); }
+input[readonly] { opacity: 0.6; cursor: not-allowed; }
+
+.btn-save { padding: 0.85rem 2rem; background: var(--green-800); color: var(--white); border: none; border-radius: 100px; font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+.btn-save:hover { background: var(--green-700); }
+.btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.success-msg { display: none; font-size: 0.875rem; color: var(--green-700); background: var(--green-50); border-radius: 8px; padding: 0.75rem 1rem; margin-top: 1rem; }
+.error-msg { display: none; font-size: 0.875rem; color: #c0392b; background: #fef0ec; border-radius: 8px; padding: 0.75rem 1rem; margin-top: 1rem; }
+
+/* LOADING */
+.loading { display: flex; align-items: center; justify-content: center; min-height: 60vh; }
+.spinner { width: 32px; height: 32px; border: 3px solid var(--green-100); border-top-color: var(--green-600); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 1.25rem; padding-bottom: 5rem; }
+  .field-row { grid-template-columns: 1fr; }
+  .mobile-nav { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: var(--green-900); z-index: 50; padding: 0.75rem 0 calc(0.75rem + env(safe-area-inset-bottom)); border-top: 1px solid rgba(255,255,255,0.08); }
+  .mobile-nav a { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.65rem; }
+  .mobile-nav a.active, .mobile-nav a:hover { color: var(--white); }
+  .mobile-nav svg { width: 20px; height: 20px; }
+  .page-title { font-size: 1.5rem; }
+}
+@media (min-width: 769px) { .mobile-nav { display: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <a href="/" class="sidebar-logo">Heela <span>Student Portal</span></a>
+    <a href="/dashboard.html" class="nav-item">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/></svg>
+      Dashboard
+    </a>
+    <a href="/messages.html" class="nav-item">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 012 2v10a2 2 0 01-2 2H7l-4 3V6a2 2 0 012-2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      Messages
+    </a>
+    <a href="/profile.html" class="nav-item active">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Profile
+    </a>
+    <div class="sidebar-bottom">
+      <button class="sign-out" onclick="signOut()">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Sign out
+      </button>
+    </div>
+  </aside>
+
+  <main class="main" id="main-content">
+    <div class="loading" id="loading"><div class="spinner"></div></div>
+    <div id="content" style="display:none;">
+      <div class="page-header">
+        <h1 class="page-title">My Profile</h1>
+        <p class="page-sub">View and update your information.</p>
+      </div>
+
+      <div class="avatar-section">
+        <div class="avatar" id="avatar"></div>
+        <div class="avatar-info">
+          <div class="avatar-name" id="avatar-name"></div>
+          <div class="avatar-email" id="avatar-email"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Personal information</div>
+        <div class="field-row">
+          <div class="field-group">
+            <label for="first-name">First name</label>
+            <input type="text" id="first-name" placeholder="First name">
+          </div>
+          <div class="field-group">
+            <label for="last-name">Last name</label>
+            <input type="text" id="last-name" placeholder="Last name">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label for="grade">Grade</label>
+            <select id="grade">
+              <option value="">Select grade</option>
+              <option value="9th">9th grade</option>
+              <option value="10th">10th grade</option>
+              <option value="11th">11th grade</option>
+              <option value="12th">12th grade</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="city-state">City / State</label>
+            <input type="text" id="city-state" placeholder="e.g. Salt Lake City, UT">
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" readonly>
+        </div>
+        <div class="success-msg" id="success-msg">Profile updated successfully.</div>
+        <div class="error-msg" id="error-msg"></div>
+        <button class="btn-save" id="save-btn" onclick="saveProfile()">Save changes</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- MOBILE NAV -->
+  <nav class="mobile-nav">
+    <a href="/dashboard.html">
+      <svg fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/></svg>
+      Dashboard
+    </a>
+    <a href="/messages.html">
+      <svg fill="none" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 012 2v10a2 2 0 01-2 2H7l-4 3V6a2 2 0 012-2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      Messages
+    </a>
+    <a href="/profile.html" class="active">
+      <svg fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Profile
+    </a>
+  </nav>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://ffoarsbuqrlbpkvaxvha.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_l7lnXsEMcrB0whXR6GCbIw_M4bwwCpe';
+
+const session = JSON.parse(localStorage.getItem('heela_session') || 'null');
+if (!session) { window.location.href = '/login.html'; }
+
+let studentId = null;
+
+async function init() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/students?auth_id=eq.${session.user.id}&select=*`, {
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${session.access_token}` }
+  });
+  const data = await res.json();
+
+  if (!data || data.length === 0) {
+    window.location.href = '/login.html';
+    return;
+  }
+
+  const s = data[0];
+  studentId = s.id;
+
+  // Avatar initials
+  const initials = (s.first_name?.[0] || '') + (s.last_name?.[0] || '');
+  const avatarEl = document.getElementById('avatar');
+  if (s.avatar_url) {
+    avatarEl.innerHTML = `<img src="${s.avatar_url}" alt="Avatar">`;
+  } else {
+    avatarEl.textContent = initials.toUpperCase();
+  }
+
+  document.getElementById('avatar-name').textContent = `${s.first_name} ${s.last_name}`;
+  document.getElementById('avatar-email').textContent = s.email;
+
+  document.getElementById('first-name').value = s.first_name || '';
+  document.getElementById('last-name').value = s.last_name || '';
+  document.getElementById('email').value = s.email || '';
+  document.getElementById('city-state').value = s.city_state || '';
+
+  const gradeSelect = document.getElementById('grade');
+  if (s.grade) {
+    for (const opt of gradeSelect.options) {
+      if (opt.value === s.grade) { opt.selected = true; break; }
+    }
+  }
+
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+}
+
+async function saveProfile() {
+  const btn = document.getElementById('save-btn');
+  const successEl = document.getElementById('success-msg');
+  const errorEl = document.getElementById('error-msg');
+  successEl.style.display = 'none';
+  errorEl.style.display = 'none';
+
+  const firstName = document.getElementById('first-name').value.trim();
+  const lastName  = document.getElementById('last-name').value.trim();
+  const grade     = document.getElementById('grade').value;
+  const cityState = document.getElementById('city-state').value.trim();
+
+  if (!firstName || !lastName) {
+    errorEl.textContent = 'First and last name are required.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/students?id=eq.${studentId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${session.access_token}`,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({ first_name: firstName, last_name: lastName, grade, city_state: cityState })
+  });
+
+  btn.disabled = false;
+  btn.textContent = 'Save changes';
+
+  if (res.ok) {
+    document.getElementById('avatar-name').textContent = `${firstName} ${lastName}`;
+    const initials = (firstName[0] || '') + (lastName[0] || '');
+    const avatarEl = document.getElementById('avatar');
+    if (!avatarEl.querySelector('img')) avatarEl.textContent = initials.toUpperCase();
+    successEl.style.display = 'block';
+    setTimeout(() => successEl.style.display = 'none', 3000);
+  } else {
+    errorEl.textContent = 'Something went wrong. Please try again.';
+    errorEl.style.display = 'block';
+  }
+}
+
+function signOut() {
+  localStorage.removeItem('heela_session');
+  window.location.href = '/login.html';
+}
+
+init();
+</script>
+</body>
+</html>
