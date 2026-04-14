@@ -225,7 +225,7 @@ async function init() {
   const data = await res.json();
 
   if (!data || data.length === 0) {
-    window.location.href = '/login.html';
+    document.getElementById('loading').innerHTML = `<div style="text-align:center;padding:2rem;color:var(--text-muted);">Profile not found. <a href="#" onclick="signOut();return false;" style="color:var(--green-700);">Sign out</a></div>`;
     return;
   }
 
@@ -254,7 +254,7 @@ async function init() {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('content').style.display = 'block';
   } catch(err) {
-    window.location.href = '/login.html';
+    document.getElementById('loading').innerHTML = `<div style="text-align:center;padding:2rem;color:var(--text-muted);">Something went wrong. <a href="#" onclick="signOut();return false;" style="color:var(--green-700);">Sign out</a></div>`;
   }
 }
 
