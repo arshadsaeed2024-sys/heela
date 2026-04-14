@@ -218,6 +218,7 @@ if (!session) { window.location.href = '/login.html'; }
 let studentId = null;
 
 async function init() {
+  try {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/students?auth_id=eq.${session.user.id}&select=*`, {
     headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${session.access_token}` }
   });
@@ -252,6 +253,9 @@ async function init() {
 
   document.getElementById('loading').style.display = 'none';
   document.getElementById('content').style.display = 'block';
+  } catch(err) {
+    window.location.href = '/login.html';
+  }
 }
 
 async function saveProfile() {
