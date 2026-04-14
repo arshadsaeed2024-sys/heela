@@ -169,10 +169,10 @@ input[readonly] { opacity: 0.6; cursor: not-allowed; }
             <label for="grade">Grade</label>
             <select id="grade">
               <option value="">Select grade</option>
-              <option value="9th">9th grade</option>
-              <option value="10th">10th grade</option>
-              <option value="11th">11th grade</option>
-              <option value="12th">12th grade</option>
+              <option value="9">9th grade</option>
+              <option value="10">10th grade</option>
+              <option value="11">11th grade</option>
+              <option value="12">12th grade</option>
             </select>
           </div>
           <div class="field-group">
@@ -295,10 +295,8 @@ async function saveProfile() {
 
   if (res.ok) {
     document.getElementById('avatar-name').textContent = `${firstName} ${lastName}`;
-    const initials = (firstName[0] || '') + (lastName[0] || '');
     const avatarEl = document.getElementById('avatar');
-    const avatarEl = document.getElementById('avatar');
-  if (!avatarEl.querySelector('img')) avatarEl.textContent = (firstName[0] + lastName[0]).toUpperCase();
+    if (!avatarEl.querySelector('img')) avatarEl.textContent = (firstName[0] + lastName[0]).toUpperCase();
     successEl.style.display = 'block';
     setTimeout(() => successEl.style.display = 'none', 3000);
   } else {
