@@ -3,10 +3,10 @@
 Read this at the start of every session to get up to speed instantly.
 
 ## The Project
-Heela is a nonprofit helping refugee students in the US navigate college applications. Founded by Arshad Saeed. Static HTML site hosted on Netlify. Full context in memory files at `~/.claude/projects/-Users-arshadsaeed-Desktop-Heela-Setup/memory/`.
+Heela is a nonprofit helping refugee students in the US navigate college applications. Founded by Arshad Saeed. Static HTML site hosted on Vercel. Full context in memory files at `~/.claude/projects/-Users-arshadsaeed-Desktop-Heela-Setup/memory/`.
 
 ## Workflow Rules
-- **Every code change:** push to GitHub (`git push origin main`) → Netlify auto-deploys. Never ask Arshad to touch Netlify.
+- **Every code change:** push to GitHub (`git push origin main`) → Vercel auto-deploys. Never ask Arshad to touch Vercel.
 - **Every DB change:** use `supabase db query --linked "SQL"`. Never ask Arshad to touch Supabase dashboard for code/schema changes.
 - Arshad does the work at a high level. Claude handles all implementation.
 
