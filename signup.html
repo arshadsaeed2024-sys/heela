@@ -369,7 +369,9 @@ async function handleSignup() {
     }
 
     // Save student info to students table
-    const userToken = authData.access_token || SUPABASE_ANON_KEY;
+    // When email confirmation is required, Supabase returns the user at authData directly (not authData.user)
+    const authUserId = authData.user?.id || authData.id || null;
+    const userToken = authData.access_token || authData.session?.access_token || SUPABASE_ANON_KEY;
     await fetch(`${SUPABASE_URL}/rest/v1/students`, {
       method: 'POST',
       headers: {
@@ -379,7 +381,7 @@ async function handleSignup() {
         'Prefer': 'return=minimal'
       },
       body: JSON.stringify({
-        auth_id: authData.user?.id || null,
+        auth_id: authUserId,
         first_name: firstName,
         last_name: lastName,
         email: email,
