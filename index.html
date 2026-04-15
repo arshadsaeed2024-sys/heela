@@ -501,8 +501,12 @@ footer {
 /* MOBILE */
 @media (max-width: 768px) {
   nav { padding: 0.8rem 1.25rem; }
-  .nav-links { display: none; }
-  .nav-links.show { display: flex; flex-direction: column; position: fixed; top: 60px; left: 0; right: 0; background: rgb(247, 244, 239); padding: 1rem 1.25rem 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); gap: 1rem; z-index: 99; }
+  .nav-links { display: flex; flex-direction: column; justify-content: center; gap: 0; position: fixed; top: 0; right: 0; bottom: 0; width: 75vw; max-width: 300px; background: var(--white); z-index: 200; padding: 2rem 1.75rem; box-shadow: -8px 0 40px rgba(0,0,0,0.12); transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); }
+  .nav-links.show { transform: translateX(0); }
+  .nav-links a { font-size: 1.1rem; padding: 0.9rem 0; border-bottom: 1px solid rgba(0,0,0,0.06); color: var(--green-900); }
+  .nav-links a:last-child { border-bottom: none; }
+  .nav-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 199; opacity: 0; transition: opacity 0.3s; }
+  .nav-overlay.show { display: block; opacity: 1; }
   .hero { padding: 7rem 1.25rem 3rem; min-height: auto; }
   section { padding: 4rem 1.25rem; }
   .model-grid, .diff-grid, .support-grid { grid-template-columns: 1fr; }
@@ -531,6 +535,9 @@ footer {
   transition: all 0.3s;
   border-radius: 2px;
 }
+.mobile-menu-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.mobile-menu-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.mobile-menu-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 @media (max-width: 768px) {
   .mobile-menu-btn { display: block; }
 }
@@ -884,9 +891,10 @@ footer {
 <body>
 
 <!-- NAV -->
+<div class="nav-overlay" id="navOverlay"></div>
 <nav id="nav">
   <a href="#" class="nav-logo">Heela</a>
-  <div class="nav-links">
+  <div class="nav-links" id="navLinks">
     <a href="#problem">The problem</a>
     <a href="#how">How we work</a>
     <a href="#pathway">The journey</a>
@@ -1354,14 +1362,40 @@ function sendThankYouEmail(email, firstName) {
 
 <script async src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-  document.getElementById('menuBtn').addEventListener('click', function() {
-    document.querySelector('.nav-links').classList.toggle('show');
+  const menuBtn = document.getElementById('menuBtn');
+  const navLinks = document.getElementById('navLinks');
+  const navOverlay = document.getElementById('navOverlay');
+
+  function openMenu() {
+    navLinks.classList.add('show');
+    navOverlay.classList.add('show');
+    menuBtn.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    navLinks.classList.remove('show');
+    navOverlay.classList.remove('show');
+    menuBtn.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  menuBtn.addEventListener('click', function() {
+    navLinks.classList.contains('show') ? closeMenu() : openMenu();
   });
-  document.querySelectorAll('.nav-links a').forEach(function(link) {
-    link.addEventListener('click', function() {
-      document.querySelector('.nav-links').classList.remove('show');
-    });
+
+  // Close on overlay tap
+  navOverlay.addEventListener('click', closeMenu);
+
+  // Close on link click
+  navLinks.querySelectorAll('a').forEach(function(link) {
+    link.addEventListener('click', closeMenu);
   });
+
+  // Close on scroll
+  window.addEventListener('scroll', function() {
+    if (navLinks.classList.contains('show')) closeMenu();
+  }, { passive: true });
 </script>
 </body>
 </html>
